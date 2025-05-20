@@ -29,31 +29,31 @@ class Provider extends ServiceProvider
     public function boot(): void
     {
 
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
+        //$this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
 
-        $this->loadViewsFrom(__DIR__ . '/Views', 'lucent');
+        // $this->loadViewsFrom(__DIR__ . '/Views', 'lucent');
+
+        // $this->publishes([
+        //     __DIR__ . '/../lang'                   => $this->app->langPath('vendor/lucent'),
+        // ], 'lucent-langs');
 
         $this->publishes([
-            __DIR__ . '/../lang'                   => $this->app->langPath('vendor/lucent'),
-        ], 'lucent-langs');
-
-        $this->publishes([
-            __DIR__ . '/../config/lucent.php'   => config_path('lucent.php'),
+            __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
         ], 'lucent-config');
 
-        $this->publishes([
-            __DIR__ . '/Views'                     => resource_path('views/vendor/lucent'),
-        ], 'lucent-views');
+        // $this->publishes([
+        //     __DIR__ . '/Views'                     => resource_path('views/vendor/lucent'),
+        // ], 'lucent-views');
 
-        $this->publishes([
-            __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
-        ], 'lucent-resources');
+        // $this->publishes([
+        //     __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
+        // ], 'lucent-resources');
 
-        $this->publishes([
-            __DIR__ . '/../stubs'                  => base_path('stubs'),
-            __DIR__ . '/../config/lucent.php'   => config_path('lucent.php'),
-            __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
-        ], 'lucent');
+        // $this->publishes([
+        //     __DIR__ . '/../stubs'                  => base_path('stubs'),
+        //     __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
+        //     __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
+        // ], 'lucent');
 
         // if ($this->app->runningInConsole()) {
         //     $this->commands([
