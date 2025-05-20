@@ -20,7 +20,7 @@ class Provider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/lucent.php', 'lucent');
+        //$this->mergeConfigFrom(__DIR__ . '/../config/lucent.php', 'lucent');
     }
 
     /**
@@ -37,9 +37,9 @@ class Provider extends ServiceProvider
         //     __DIR__ . '/../lang'                   => $this->app->langPath('vendor/lucent'),
         // ], 'lucent-langs');
 
-        $this->publishes([
-            __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
-        ], 'lucent-config');
+        // $this->publishes([
+        //     __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
+        // ], 'lucent-config');
 
         // $this->publishes([
         //     __DIR__ . '/Views'                     => resource_path('views/vendor/lucent'),
