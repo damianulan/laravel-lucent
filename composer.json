@@ -1,0 +1,53 @@
+{
+  "name": "damianulan/laravel-lucent",
+  "type": "library",
+  "description": "Lucent Laravel skeleton application package",
+  "keywords": [
+    "laravel",
+    "lucent",
+    "skeleton",
+    "forge"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Damian Ułan",
+      "email": "damian.ulan@protonmail.com",
+      "homepage": "https://damianulan.me",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.3",
+    "ext-json": "*",
+    "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+    "mews/purifier": "^3.4"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.5",
+    "phpunit/phpunit": "^11.0|^12.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lucent\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Lucent\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Lucent\\Provider"
+      ],
+      "aliases": {
+        "Lucent": "Lucent\\Facades\\Lucent"
+      }
+    }
+  }
+}
