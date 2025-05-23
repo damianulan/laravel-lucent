@@ -1,6 +1,6 @@
 <?php
 
-namespace Lucent\Helpers;
+namespace Lucent\Console;
 
 use Illuminate\Support\Facades\Process;
 
