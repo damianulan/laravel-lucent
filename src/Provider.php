@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Blade;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
+ * @package Lucent
  * @license MIT
  */
 class Provider extends ServiceProvider
@@ -20,7 +21,7 @@ class Provider extends ServiceProvider
      */
     public function register(): void
     {
-        //$this->mergeConfigFrom(__DIR__ . '/../config/lucent.php', 'lucent');
+        $this->mergeConfigFrom(__DIR__ . '/../config/lucent.php', 'lucent');
     }
 
     /**
@@ -29,17 +30,17 @@ class Provider extends ServiceProvider
     public function boot(): void
     {
 
-        //$this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
 
-        // $this->loadViewsFrom(__DIR__ . '/Views', 'lucent');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'lucent');
 
-        // $this->publishes([
-        //     __DIR__ . '/../lang'                   => $this->app->langPath('vendor/lucent'),
-        // ], 'lucent-langs');
+        $this->publishes([
+            __DIR__ . '/../lang'                   => $this->app->langPath('vendor/lucent'),
+        ], 'lucent-langs');
 
-        // $this->publishes([
-        //     __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
-        // ], 'lucent-config');
+        $this->publishes([
+            __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
+        ], 'lucent-config');
 
         // $this->publishes([
         //     __DIR__ . '/Views'                     => resource_path('views/vendor/lucent'),
@@ -54,12 +55,6 @@ class Provider extends ServiceProvider
         //     __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
         //     __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
         // ], 'lucent');
-
-        // if ($this->app->runningInConsole()) {
-        //     $this->commands([
-        //         FormMakeCommand::class,
-        //     ]);
-        // }
 
         $this->registerBladeDirectives();
     }
