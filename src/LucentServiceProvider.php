@@ -33,7 +33,7 @@ class Provider extends ServiceProvider
 
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'lucent');
+        //$this->loadViewsFrom(__DIR__ . '/../resources/views', 'lucent');
 
         $this->publishes([
             __DIR__ . '/../lang'                   => $this->app->langPath('vendor/lucent'),

@@ -46,7 +46,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Lucent\\Provider"
+        "Lucent\\LucentServiceProvider"
       ],
       "aliases": {
         "Lucent": "Lucent\\Facades\\Lucent"
