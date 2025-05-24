@@ -18,6 +18,7 @@ abstract class Service
     private string $cachePrefix = 'service_';
     private int $defaultCacheTtl = 300; // in seconds
     private bool $passed = false;
+    private mixed $returnValue;
 
     public function __construct(array $datas)
     {
@@ -80,6 +81,7 @@ abstract class Service
         if ($result) {
             $this->passed = true;
         }
+        $this->returnValue = $result;
 
         return $this;
     }
@@ -214,5 +216,18 @@ abstract class Service
     public function getOriginal(): Collection
     {
         return $this->original;
+    }
+
+    /**
+     * Returns a return value of a handle method.
+     *
+     * @return mixed
+     */
+    public function withReturn(): mixed
+    {
+        if (isset($this->returnValue)) {
+            return $this->returnValue;
+        }
+        return false;
     }
 }
