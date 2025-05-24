@@ -58,6 +58,7 @@ class LucentServiceProvider extends ServiceProvider
         ], 'lucent');
 
         $this->registerBladeDirectives();
+        $this->registerCommands();
     }
 
     public function registerBladeDirectives(): void {}
