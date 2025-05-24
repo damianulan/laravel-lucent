@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lucent\Services\Service;
+
+class {{ class }} extends Service
+{
+    /**
+     * Handle the service main logic.
+     *
+     * @return mixed
+     */
+    public function handle(): mixed
+    {
+        
+    }
+
+}

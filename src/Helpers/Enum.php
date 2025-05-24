@@ -2,6 +2,9 @@
 
 namespace Lucent\Helpers;
 
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This is custom, more powerful enum class implementation.
  *
@@ -9,7 +12,7 @@ namespace Lucent\Helpers;
  * @copyright 2025 damianulan
  * @package Lucent
  */
-abstract class Enum
+abstract class Enum implements CastsAttributes
 {
     /**
      * Cache of constants for each enum class.
@@ -156,5 +159,28 @@ abstract class Enum
     public function __toString(): string
     {
         return (string) $this->value;
+    }
+
+    /**
+     * Cast the given value.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function get(Model $model, string $key, mixed $value, array $attributes): mixed
+    {
+        return self::tryFrom($value);
+    }
+
+    /**
+     * Prepare the given value for storage.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function set(Model $model, string $key, mixed $value, array $attributes): string|int
+    {
+        if ($value instanceof Enum) {
+            return $this->value;
+        }
+        return $value;
     }
 }

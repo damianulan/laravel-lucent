@@ -5,6 +5,7 @@ namespace Lucent;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Support\Facades\Blade;
+use Lucent\Console\Commands\Generators\MakeServiceCommand;
 
 /**
  * Undocumented class
@@ -50,14 +51,23 @@ class Provider extends ServiceProvider
         //     __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
         // ], 'lucent-resources');
 
-        // $this->publishes([
-        //     __DIR__ . '/../stubs'                  => base_path('stubs'),
-        //     __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
-        //     __DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
-        // ], 'lucent');
+        $this->publishes([
+            __DIR__ . '/../stubs'                  => base_path('stubs'),
+            __DIR__ . '/../config/lucent.php'      => config_path('lucent.php'),
+            //__DIR__ . '/../resources/style'        => resource_path('vendor/lucent/style'),
+        ], 'lucent');
 
         $this->registerBladeDirectives();
     }
 
     public function registerBladeDirectives(): void {}
+
+    public function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeServiceCommand::class,
+            ]);
+        }
+    }
 }
