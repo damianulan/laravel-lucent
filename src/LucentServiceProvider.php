@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\Support\Facades\Blade;
 use Lucent\Console\Commands\Generators\MakeServiceCommand;
+use Lucent\Console\Commands\Generators\MakePipeCommand;
 
 /**
  * Undocumented class
@@ -68,6 +69,7 @@ class LucentServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 MakeServiceCommand::class,
+                MakePipeCommand::class,
             ]);
         }
     }

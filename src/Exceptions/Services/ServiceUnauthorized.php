@@ -1,6 +1,6 @@
 <?php
 
-namespace Lucent\Exceptions\Authorization;
+namespace Lucent\Exceptions\Services;
 
 class ServiceUnauthorized extends \Exception
 {

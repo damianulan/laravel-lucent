@@ -5,30 +5,38 @@ namespace Lucent\Services;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Exception;
-use Lucent\Exceptions\Authorization\ServiceUnauthorized;
+use Illuminate\Support\Collection;
+use Lucent\Exceptions\Services\ServiceUnauthorized;
 
 abstract class Service
 {
-    protected array $original = [];
-    protected array $errors = [];
-    protected string $cachePrefix = 'service_';
-    protected int $defaultCacheTtl = 300; // in seconds
+    private Collection $original;
+    private array $errors = [];
+    private string $cachePrefix = 'service_';
+    private int $defaultCacheTtl = 300; // in seconds
+    private bool $passed = false;
 
     public function __construct(array $datas)
     {
-        $this->original = $datas;
+        $this->original = new Collection();
         foreach ($datas as $key => $value) {
             if (!isset($this->$key)) {
                 $this->$key = $value;
+                $this->original->put($key, $value);
             }
         }
     }
 
+    /**
+     * Pass properties as arguments.
+     * Use named arguments eg. ::boot(request: $request, name: $name)
+     *
+     * @param mixed ...$props
+     * @return self
+     */
     public static function boot(...$props): self
     {
         return new static($props);
@@ -55,27 +63,52 @@ abstract class Service
     /**
      * Execute with error handling.
      */
-    public function execute(): mixed
+    public function execute(): self
     {
+        $result = false;
         try {
             $auth = $this->authorize();
             if (!$auth) {
                 throw new ServiceUnauthorized(static::class);
             }
-            return DB::transaction($this->handle());
+            $result = DB::transaction($this->handle());
         } catch (Exception $e) {
             $this->logException($e);
             $this->errors[] = $e->getMessage();
-            return null;
         }
+
+        if ($result) {
+            $this->passed = true;
+        }
+
+        return $this;
+    }
+
+    protected function rules(): array
+    {
+        return [];
+    }
+
+    protected function messages(): array
+    {
+        return [];
+    }
+
+    protected function attributes(): array
+    {
+        return [];
     }
 
     /**
      * Run validation rules.
      */
-    protected function validate(array $rules, array $messages = []): bool
+    protected function validate(): bool
     {
-        $validator = Validator::make($this->data, $rules, $messages);
+        $rules = $this->rules();
+        $messages = $this->messages();
+        $attributes = $this->attributes();
+
+        $validator = Validator::make($this->data, $rules, $messages, $attributes);
         if ($validator->fails()) {
             $this->errors = $validator->errors()->all();
             return false;
@@ -95,14 +128,6 @@ abstract class Service
     }
 
     /**
-     * Dispatch an event.
-     */
-    protected function dispatchEvent(object $event): void
-    {
-        Event::dispatch($event);
-    }
-
-    /**
      * Cache helper.
      */
     protected function remember(string $key, callable $callback, ?int $ttl = null): mixed
@@ -111,14 +136,6 @@ abstract class Service
         $cacheKey = $this->cachePrefix . Str::slug(static::class . '_' . $key);
 
         return Cache::remember($cacheKey, $ttl, $callback);
-    }
-
-    /**
-     * Access a configuration value.
-     */
-    protected function config(string $key, $default = null): mixed
-    {
-        return Config::get($key, $default);
     }
 
     /**
@@ -138,6 +155,26 @@ abstract class Service
     }
 
     /**
+     * Check if service has passed.
+     *
+     * @return bool
+     */
+    public function passed(): bool
+    {
+        return $this->passed && empty($this->errors);
+    }
+
+    /**
+     * Check if service has failed.
+     *
+     * @return bool
+     */
+    public function failed(): bool
+    {
+        return !$this->passed || empty($this->errors);
+    }
+
+    /**
      * Add a manual error.
      */
     protected function addError(string $message): void
@@ -146,18 +183,35 @@ abstract class Service
     }
 
     /**
-     * Set data manually.
+     * Add more data manually. Use named arguments.
      */
-    public function setData(array $data): static
+    public function add(...$props): static
     {
-        $this->data = $data;
+        foreach ($props as $key => $prop) {
+            if (!isset($this->$key)) {
+                $this->original->put($key, $prop);
+                $this->$key = $prop;
+            }
+        }
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        $stack = [];
+        $keys = $this->original->keys()->all();
+        foreach ($keys as $key) {
+            if (isset($this->$key)) {
+                $stack[$key] = $this->$key;
+            }
+        }
+        return $stack;
     }
 
     /**
      * Get the current input data.
      */
-    public function getOriginal(): array
+    public function getOriginal(): Collection
     {
         return $this->original;
     }

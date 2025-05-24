@@ -11,7 +11,7 @@ class {{ class }} extends Service
      *
      * @return mixed
      */
-    public function handle(): mixed
+    protected function handle(): mixed
     {
         
     }

@@ -1,0 +1,24 @@
+<?php
+
+namespace {{ namespace }};
+
+use Closure;
+use Lucent\Pipelines\Pipe;
+
+final readonly class {{ class }} implements Pipe
+{
+
+    /**
+     * Handle the pipe logic.
+     *
+     * @param  mixed  $value
+     * @param  Closure  $next
+     * @return string
+     */
+    public function handle(mixed $value, Closure $next): string
+    {
+        //
+
+        return $next($value);
+    }
+}
