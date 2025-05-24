@@ -15,7 +15,7 @@ use Lucent\Console\Commands\Generators\MakeServiceCommand;
  * @package Lucent
  * @license MIT
  */
-class Provider extends ServiceProvider
+class LucentServiceProvider extends ServiceProvider
 {
     /**
      * Register the application services.
