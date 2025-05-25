@@ -50,6 +50,11 @@ class Git
         return trim(substr($file, strpos($file, $ref) + strlen($ref)));
     }
 
+    public static function getLatestTagName(): string
+    {
+        return self::register('git fetch --tags', 'git describe --tags --abbrev=0')->run();
+    }
+
     public static function checkoutLatestRelease(): self
     {
         return self::register('git fetch --tags', 'git checkout $(git tag | sort -V | tail -n 1)');
