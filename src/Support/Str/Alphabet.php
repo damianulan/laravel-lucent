@@ -46,6 +46,7 @@ class Alphabet
      */
     public static function getAlphabetPosition(string $letter): ?int
     {
+        $letter = substr($letter, 0, 1);
         $normalized = self::normalizeToASCII($letter);
         $normalized = strtoupper($normalized);
 
