@@ -73,7 +73,8 @@ abstract class Service
             if (!$auth) {
                 throw new ServiceUnauthorized(static::class);
             }
-            $result = DB::transaction($this->handle());
+            $closure = \Closure::fromCallable([$this, 'handle']);
+            $result = DB::transaction($closure);
         } catch (Exception $e) {
             $this->logException($e);
             $this->errors[] = $e->getMessage();
