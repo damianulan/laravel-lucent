@@ -255,6 +255,9 @@ abstract class Service
      */
     public function request(): Request
     {
-        return isset($this->request) ? $this->request : new Request();
+        if (!isset($this->request)) {
+            $this->request = new Request();
+        }
+        return $this->request;
     }
 }
