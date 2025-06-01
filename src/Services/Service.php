@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Collection;
 use Lucent\Exceptions\Services\ServiceUnauthorized;
+use Illuminate\Http\Request;
 
 abstract class Service
 {
@@ -229,5 +230,15 @@ abstract class Service
             return $this->returnValue;
         }
         return false;
+    }
+
+    /**
+     * Return request object.
+     *
+     * @return \Illuminate\Http\Request
+     */
+    public function request(): Request
+    {
+        return isset($this->request) ? $this->request : new Request();
     }
 }
