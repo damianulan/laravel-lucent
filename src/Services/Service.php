@@ -87,16 +87,31 @@ abstract class Service
         return $this;
     }
 
+    /**
+     * Laravel validation rules.
+     *
+     * @return array
+     */
     protected function rules(): array
     {
         return [];
     }
 
+    /**
+     * Laravel validation messages.
+     *
+     * @return array
+     */
     protected function messages(): array
     {
         return [];
     }
 
+    /**
+     * Laravel validation attributes.
+     *
+     * @return array
+     */
     protected function attributes(): array
     {
         return [];
@@ -224,7 +239,7 @@ abstract class Service
      *
      * @return mixed
      */
-    public function withReturn(): mixed
+    public function getResult(): mixed
     {
         if (isset($this->returnValue)) {
             return $this->returnValue;
