@@ -118,16 +118,20 @@ abstract class Service
         return [];
     }
 
+
     /**
      * Run validation rules.
+     *
+     * @param mixed $datas
+     * @return bool
      */
-    protected function validate(): bool
+    protected function validate($datas): bool
     {
         $rules = $this->rules();
         $messages = $this->messages();
         $attributes = $this->attributes();
 
-        $validator = Validator::make($this->data, $rules, $messages, $attributes);
+        $validator = Validator::make($datas, $rules, $messages, $attributes);
         if ($validator->fails()) {
             $this->errors = $validator->errors()->all();
             return false;
@@ -140,9 +144,20 @@ abstract class Service
      */
     protected function logException(Exception $e): void
     {
+        $original = $this->original;
+        $datas = array();
+
+        if ($this->original->isNotEmpty()) {
+            foreach ($original->keys()->all() as $key) {
+                if (isset($this->$key)) {
+                    $datas[$key] = $this->$key;
+                }
+            }
+        }
+
         Log::error(static::class . ' failed: ' . $e->getMessage(), [
             'exception' => $e,
-            'data' => $this->data,
+            'datas' => $datas,
         ]);
     }
 
