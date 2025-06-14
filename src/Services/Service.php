@@ -8,17 +8,55 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Lucent\Exceptions\Services\ServiceUnauthorized;
 use Illuminate\Http\Request;
+use JsonSerializable;
 
-abstract class Service
+abstract class Service implements Arrayable, Jsonable, JsonSerializable
 {
+    /**
+     * Original stack of parameters passed to the service.
+     *
+     * @var \Illuminate\Support\Collection
+     */
     private Collection $original;
+
+    /**
+     * An array set of error messages.
+     *
+     * @var array
+     */
     private array $errors = [];
+
+    /**
+     * cache prefix.
+     *
+     * @var string
+     */
     private string $cachePrefix = 'service_';
+
+    /**
+     * Service cache Time To Live.
+     *
+     * @var int
+     */
     private int $defaultCacheTtl = 300; // in seconds
+
+    /**
+     * Check if service has passed validation and database operations.
+     *
+     * @var bool
+     */
     private bool $passed = false;
+
+    /**
+     * A return value of a handle method.
+     *
+     * @var mixed
+     */
     private mixed $returnValue;
 
     public function __construct(array $datas)
@@ -230,6 +268,11 @@ abstract class Service
         return $this;
     }
 
+    /**
+     * Get service arguments as an array
+     *
+     * @return array
+     */
     public function toArray(): array
     {
         $stack = [];
@@ -240,6 +283,27 @@ abstract class Service
             }
         }
         return $stack;
+    }
+
+    /**
+     * Convert service arguments to json.
+     *
+     * @param int $options
+     * @return mixed
+     */
+    public function toJson($options = 0): mixed
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    /**
+     * Datas to serialize as json.
+     *
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     /**

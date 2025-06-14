@@ -6,7 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * This is custom, more powerful enum class implementation.
+ * This is custom, more powerful and convenient enum class implementation.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan

@@ -2,6 +2,14 @@
 
 namespace Lucent\Support\Traits;
 
+/**
+ * Adds support for method-based model event listeners, so that global boot() methods won't be overriden.
+ * In your model create event static methods like created{ModelName}, updated{ModelName}() etc.
+ *
+ * @author Damian Ułan <damian.ulan@protonmail.com>
+ * @copyright 2025 damianulan
+ * @package Lucent
+ */
 trait Dispatcher
 {
 

@@ -3,37 +3,87 @@
 namespace Lucent\Support\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Adds operational helpers to Eloquent model, that is based on common boolean attribute flags such as 'draft' and 'active'.
+ *
+ * @author Damian Ułan <damian.ulan@protonmail.com>
+ * @copyright 2025 damianulan
+ * @package Lucent
+ */
 trait VirginModel
 {
-    public function empty()
+    /**
+     * Checks if the model is empty (i.e., has no ID or is not persisted).
+     *
+     * @return bool
+     */
+    public function empty(): bool
     {
-        return empty($this->id) || !$this->exists();
-    }
-
-    public function notEmpty()
-    {
-        return !empty($this->id) && $this->exists();
+        $key = $this->getKeyName();
+        return empty($this->$key) || !$this->exists();
     }
 
     /**
-     * Get all without global scopes. Be careful since it does not respect permission based access.
+     * Checks if the model is not empty (i.e., has an ID and is not persisted).
      *
-     * @return void
+     * @return bool
      */
-    public static function getAll()
+    public function notEmpty(): bool
+    {
+        $key = $this->getKeyName();
+        return !empty($this->$key) && $this->exists();
+    }
+
+    /**
+     * Get all model records without any global scopes.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAll(): Collection
     {
         return static::withoutGlobalScopes()->get();
     }
 
-    public static function allActive()
+    /**
+     * Get records based on 'active' == 1 attribute.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function allActive(): Collection
     {
         return static::active()->get();
     }
 
-    public static function allInactive()
+    /**
+     * Get records based on 'active' == 0 attribute.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function allInactive(): Collection
     {
         return static::inactive()->get();
+    }
+
+    /**
+     * Get records based on 'draft' == 0 attribute.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function allPublished(): Collection
+    {
+        return static::published()->get();
+    }
+
+    /**
+     * Get records based on 'draft' == 1 attribute.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function allDrafts(): Collection
+    {
+        return static::drafted()->get();
     }
 
     /**
@@ -47,21 +97,21 @@ trait VirginModel
         }
     }
 
-    public function scopeInactive(Builder $query)
+    public function scopeInactive(Builder $query): void
     {
         if (in_array('active', $this->fillable)) {
             $query->where('active', 0);
         }
     }
 
-    public function scopePublished(Builder $query)
+    public function scopePublished(Builder $query): void
     {
         if (in_array('draft', $this->fillable)) {
             $query->where('draft', 0);
         }
     }
 
-    public function scopeDrafted(Builder $query)
+    public function scopeDrafted(Builder $query): void
     {
         if (in_array('draft', $this->fillable)) {
             $query->where('draft', 1);

@@ -4,13 +4,21 @@ namespace Lucent\Support\Traits;
 
 use Illuminate\Support\Str;
 
+/**
+ * Adds UUIDv4 as primary key support to your Eloquent models.
+ *
+ * @author Damian Ułan <damian.ulan@protonmail.com>
+ * @copyright 2025 damianulan
+ * @package Lucent
+ */
 trait UUID
 {
     protected static function bootUUID()
     {
         static::retrieved(function ($model) {
-            $model->incrementing = false;  // this is used after instance is loaded from DB
+            $model->incrementing = false;
         });
+
         /**
          * Listen for the creating event on the user model.
          * Sets the 'id' to a UUID using Str::uuid() on the instance being created
