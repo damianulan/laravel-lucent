@@ -15,6 +15,15 @@ use Lucent\Exceptions\Services\ServiceUnauthorized;
 use Illuminate\Http\Request;
 use JsonSerializable;
 
+/*
+ * Handle service business logic of data operations and manipulation.
+ * Best works as Repository-Service design pattern.
+ *
+ * @author Damian Ułan <damian.ulan@protonmail.com>
+ * @copyright 2025 damianulan
+ * @package Lucent
+ */
+
 abstract class Service implements Arrayable, Jsonable, JsonSerializable
 {
     /**

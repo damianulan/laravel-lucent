@@ -5,6 +5,13 @@ namespace Lucent\Pipelines;
 use Illuminate\Pipeline\Pipeline;
 use Lucent\Pipelines\Pipe;
 
+/**
+ * Handles custom laravel pipelines coupled with models.
+ *
+ * @author Damian Ułan <damian.ulan@protonmail.com>
+ * @copyright 2025 damianulan
+ * @package Lucent
+ */
 class LucentPipeline
 {
     private array $pipeStack = [];
