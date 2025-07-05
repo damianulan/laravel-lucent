@@ -2,10 +2,6 @@
 
 [![Static Badge](https://img.shields.io/badge/made_with-Laravel-red?style=for-the-badge)](https://laravel.com/docs/11.x/releases) &nbsp; [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE) &nbsp; [![Static Badge](https://img.shields.io/badge/maintainer-damianulan-blue?style=for-the-badge)](https://damianulan.me)
 
-## Package in core production !
-
-Stable version ETA: 2025/06/30.
-
 ## Description
 
 Laravel Lucent is a package that provides a set of custom resources, components and traits for laravel projects and provides comprehensive support for popular design patterns (eg. pipelines services, repository pattern, builders).
@@ -28,8 +24,7 @@ php artisan vendor:publish --tag=lucent
 
 ## Components
 
-- [Services](docs/SERIVCES.md)
-- [Repositories](docs/REPOSITORIES.md)
+- [Services](docs/SERVICES.md)
 - [Pipelines](docs/PIPELINES.md)
 
 ## Traits
