@@ -15,7 +15,7 @@ Think of a service as a waiter in a restaurant:
 ### Create Service from a stub
 
 ```
-php artisan makeLservice ServiceName
+php artisan make:service ServiceName
 ```
 
 ## Examples
