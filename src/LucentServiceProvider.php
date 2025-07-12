@@ -9,8 +9,6 @@ use Lucent\Console\Commands\Generators\MakeServiceCommand;
 use Lucent\Console\Commands\Generators\MakePipeCommand;
 
 /**
- * Undocumented class
- *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
  * @package Lucent

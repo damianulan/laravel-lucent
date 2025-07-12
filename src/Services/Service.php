@@ -111,6 +111,9 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Execute with error handling.
+     *
+     * @return Lucent\Services\Serivce
+     * @throws Lucent\Exceptions\Services\ServiceUnauthorized
      */
     public function execute(): self
     {
