@@ -22,7 +22,12 @@ trait HasPipes
         });
     }
 
-    private static function pushPipes($model): bool
+    /**
+     *
+     * @param mixed $model
+     * @return mixed
+     */
+    private static function pushPipes($model)
     {
         $result = false;
         if (isset($model->pipes) && is_array($model->pipes) && count($model->pipes)) {
@@ -49,6 +54,11 @@ trait HasPipes
         return $result;
     }
 
+    /**
+     * Run pipes ad hoc
+     *
+     * @return mixed
+     */
     public function runPipeline()
     {
         return self::pushPipes($this);

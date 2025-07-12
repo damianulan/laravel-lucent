@@ -70,6 +70,9 @@ $updatedModel = $service->toArray();
 // or in JSON format
 $updatedModel = $service->toJson();
 
+// you can also get error messages from service
+$errors = $service->getErrors();
+
 ```
 
 Check if the service passed the validation by calling `passed` method:

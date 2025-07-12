@@ -29,6 +29,12 @@ class LucentPipeline
         return new self($pipes);
     }
 
+    /**
+     * Add more pipes on the way.
+     *
+     * @param mixed $pipe
+     * @return self
+     */
     public function addPipe($pipe): self
     {
         if (class_exists($pipe)) {
@@ -40,6 +46,12 @@ class LucentPipeline
         return $this;
     }
 
+    /**
+     * Put ptoperty to the pipe.
+     *
+     * @param mixed $value
+     * @return self
+     */
     public function put(mixed $value): self
     {
         $this->sendable = $value;
