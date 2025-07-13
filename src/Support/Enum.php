@@ -4,6 +4,7 @@ namespace Lucent\Support;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * This is custom, more powerful and convenient enum class implementation.
@@ -28,6 +29,8 @@ abstract class Enum implements CastsAttributes
      */
     private string|int $value;
 
+    private string $label;
+
     /**
      * Enum constructor. Validates that the value exists in the enum.
      *
@@ -40,7 +43,9 @@ abstract class Enum implements CastsAttributes
             if (!in_array($value, static::values(), true)) {
                 throw new \InvalidArgumentException("Invalid enum value: " . $value);
             }
+
             $this->value = $value;
+            $this->label = $this->label();
         }
     }
 
@@ -71,7 +76,9 @@ abstract class Enum implements CastsAttributes
      */
     public static function values(): array
     {
-        return array_values(static::cases());
+        $class = static::class;
+        $reflection = new \ReflectionClass($class);
+        return $reflection->getConstants();
     }
 
     /**
@@ -89,17 +96,27 @@ abstract class Enum implements CastsAttributes
      * Returns an associative array of constant names to values.
      * Uses reflection and caches the result.
      *
-     * @return array<string, string|int>
+     * @return \Illuminate\Support\Collection
      */
-    public static function cases(): array
+    public static function cases(): Collection
     {
         $class = static::class;
         if (!isset(self::$cache[$class])) {
             $reflection = new \ReflectionClass($class);
-            self::$cache[$class] = $reflection->getConstants();
+            $collection = new Collection;
+            foreach ($reflection->getConstants() as $key => $value) {
+                $collection->put($key, self::tryFrom($value));
+            }
+
+            self::$cache[$class] = $collection;
         }
 
-        return self::$cache[$class];
+        $fromCache = self::$cache[$class] ?? null;
+        if (!is_null($fromCache) && $fromCache instanceof Collection) {
+            return $fromCache;
+        }
+
+        return new Collection();
     }
 
     /**
@@ -158,7 +175,7 @@ abstract class Enum implements CastsAttributes
      */
     public function __toString(): string
     {
-        return (string) $this->value;
+        return $this->value ?? '';
     }
 
     /**
@@ -179,7 +196,7 @@ abstract class Enum implements CastsAttributes
     public function set(Model $model, string $key, mixed $value, array $attributes): string|int
     {
         if ($value instanceof Enum) {
-            return $this->value;
+            return $value->value;
         }
         return $value;
     }
