@@ -8,11 +8,9 @@ namespace Lucent\Support\Traits;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 trait Dispatcher
 {
-
     protected static function bootDispatcher()
     {
         static::retrieved(function ($model) {
@@ -45,7 +43,7 @@ trait Dispatcher
     {
         $rc = new \ReflectionClass($model::class);
         $name = $rc->getShortName();
-        $method = $type . $name;
+        $method = $type.$name;
         if ($rc->hasMethod($method)) {
             $rc->getMethod($method)->invoke($model, $model);
         }

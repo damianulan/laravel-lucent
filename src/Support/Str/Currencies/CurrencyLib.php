@@ -6,15 +6,14 @@ namespace Lucent\Support\Str\Currencies;
 
 /**
  * A library providing ISO 4217 data.
- * 
+ *
  * @forked from https://github.com/alcohol/iso4217
+ *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 class CurrencyLib
 {
-
     private array $currencies;
 
     public function __construct()
@@ -1273,20 +1272,20 @@ class CurrencyLib
     {
         foreach ($this->currencies as $currency) {
             if (
-                0 === strcasecmp($code, $currency['alpha3']) ||
-                0 === strcasecmp($code, $currency['numeric'])
+                strcasecmp($code, $currency['alpha3']) === 0 ||
+                strcasecmp($code, $currency['numeric']) === 0
             ) {
                 return $currency;
             }
         }
 
-        throw new \OutOfBoundsException('ISO 4217 does not contain: ' . $code);
+        throw new \OutOfBoundsException('ISO 4217 does not contain: '.$code);
     }
 
     public function getByAlpha3(string $alpha3): array
     {
-        if (0 === preg_match('/^[a-zA-Z]{3}$/', $alpha3)) {
-            throw new \DomainException('Not a valid alpha3: ' . $alpha3);
+        if (preg_match('/^[a-zA-Z]{3}$/', $alpha3) === 0) {
+            throw new \DomainException('Not a valid alpha3: '.$alpha3);
         }
 
         return $this->getByCode($alpha3);
@@ -1294,8 +1293,8 @@ class CurrencyLib
 
     public function getByNumeric(string $numeric): array
     {
-        if (0 === preg_match('/^[0-9]{3}$/', $numeric)) {
-            throw new \DomainException('Not a valid numeric: ' . $numeric);
+        if (preg_match('/^[0-9]{3}$/', $numeric) === 0) {
+            throw new \DomainException('Not a valid numeric: '.$numeric);
         }
 
         return $this->getByCode($numeric);

@@ -10,36 +10,31 @@ use Illuminate\Database\Eloquent\Collection;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 trait VirginModel
 {
     /**
      * Checks if the model is empty (i.e., has no ID or is not persisted).
-     *
-     * @return bool
      */
     public function empty(): bool
     {
         $key = $this->getKeyName();
-        return empty($this->$key) || !$this->exists();
+
+        return empty($this->$key) || ! $this->exists();
     }
 
     /**
      * Checks if the model is not empty (i.e., has an ID and is not persisted).
-     *
-     * @return bool
      */
     public function notEmpty(): bool
     {
         $key = $this->getKeyName();
-        return !empty($this->$key) && $this->exists();
+
+        return ! empty($this->$key) && $this->exists();
     }
 
     /**
      * Get all model records without any global scopes.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getAll(): Collection
     {
@@ -48,8 +43,6 @@ trait VirginModel
 
     /**
      * Get records based on 'active' == 1 attribute.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function allActive(): Collection
     {
@@ -58,8 +51,6 @@ trait VirginModel
 
     /**
      * Get records based on 'active' == 0 attribute.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function allInactive(): Collection
     {
@@ -68,8 +59,6 @@ trait VirginModel
 
     /**
      * Get records based on 'draft' == 0 attribute.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function allPublished(): Collection
     {
@@ -78,8 +67,6 @@ trait VirginModel
 
     /**
      * Get records based on 'draft' == 1 attribute.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function allDrafts(): Collection
     {
@@ -89,7 +76,6 @@ trait VirginModel
     /**
      * QUERY LOCAL SCOPES
      */
-
     public function scopeActive(Builder $query): void
     {
         if (in_array('active', $this->fillable)) {

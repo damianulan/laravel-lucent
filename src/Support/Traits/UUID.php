@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 trait UUID
 {

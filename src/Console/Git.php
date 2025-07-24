@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Process;
  * Get git info from current repository and run popular git commands at hand.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @package Lucent
  * @copyright 2025 damianulan
  */
 class Git
@@ -45,8 +44,9 @@ class Git
 
     public static function head(): string
     {
-        $file = file_get_contents(base_path() . '/.git/HEAD');
-        $ref = "ref: refs/heads/";
+        $file = file_get_contents(base_path().'/.git/HEAD');
+        $ref = 'ref: refs/heads/';
+
         return trim(substr($file, strpos($file, $ref) + strlen($ref)));
     }
 
@@ -64,9 +64,10 @@ class Git
     {
         $trace = debug_backtrace();
         $command = $trace[3]['function'] ?? null;
-        $instance = new self();
+        $instance = new self;
         $instance->exec = $exec;
         $instance->command = $command;
+
         return $instance;
     }
 }

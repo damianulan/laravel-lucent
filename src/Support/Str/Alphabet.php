@@ -9,41 +9,65 @@ namespace Lucent\Support\Str;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 class Alphabet
 {
     public const A = 'A';
+
     public const B = 'B';
+
     public const C = 'C';
+
     public const D = 'D';
+
     public const E = 'E';
+
     public const F = 'F';
+
     public const G = 'G';
+
     public const H = 'H';
+
     public const I = 'I';
+
     public const J = 'J';
+
     public const K = 'K';
+
     public const L = 'L';
+
     public const M = 'M';
+
     public const N = 'N';
+
     public const O = 'O';
+
     public const P = 'P';
+
     public const Q = 'Q';
+
     public const R = 'R';
+
     public const S = 'S';
+
     public const T = 'T';
+
     public const U = 'U';
+
     public const V = 'V';
+
     public const W = 'W';
+
     public const X = 'X';
+
     public const Y = 'Y';
+
     public const Z = 'Z';
 
     /**
      * Get position of a letter (including UTF-8 letters like Ą, É, Ç, etc.) in the Latin alphabet.
      *
-     * @param string $letter Single letter
+     * @param  string  $letter  Single letter
      * @return int|null Position (1–26) or null if not a Latin letter
      */
     public static function getAlphabetPosition(string $letter): ?int
@@ -57,6 +81,7 @@ class Alphabet
         }
 
         $ascii = ord($normalized);
+
         return ($ascii >= 65 && $ascii <= 90) ? $ascii - 64 : null;
     }
 
@@ -64,7 +89,6 @@ class Alphabet
      * Normalize a UTF-8 letter (e.g., Ą, É, Ç) to its base ASCII character.
      * Covers Polish and most accented Latin characters.
      *
-     * @param string $char
      * @return string Normalized single-letter string
      */
     private static function normalizeToASCII(string $char): string
@@ -149,13 +173,14 @@ class Alphabet
             'ü' => 'u',
             'ý' => 'y',
             'þ' => 'th',
-            'ÿ' => 'y'
+            'ÿ' => 'y',
         ];
 
         // Use intl Normalizer if available
         if (class_exists(\Normalizer::class)) {
             $normalized = \Normalizer::normalize($char, \Normalizer::FORM_D);
             $ascii = preg_replace('/\p{Mn}/u', '', $normalized);
+
             return mb_substr($ascii ?? '', 0, 1);
         }
 

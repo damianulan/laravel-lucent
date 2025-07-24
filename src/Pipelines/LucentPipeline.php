@@ -3,18 +3,17 @@
 namespace Lucent\Pipelines;
 
 use Illuminate\Pipeline\Pipeline;
-use Lucent\Pipelines\Pipe;
 
 /**
  * Handles custom laravel pipelines coupled with models.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 class LucentPipeline
 {
     private array $pipeStack = [];
+
     private $sendable;
 
     public function __construct(array $pipes)
@@ -32,8 +31,7 @@ class LucentPipeline
     /**
      * Add more pipes on the way.
      *
-     * @param mixed $pipe
-     * @return self
+     * @param  mixed  $pipe
      */
     public function addPipe($pipe): self
     {
@@ -48,13 +46,11 @@ class LucentPipeline
 
     /**
      * Put ptoperty to the pipe.
-     *
-     * @param mixed $value
-     * @return self
      */
     public function put(mixed $value): self
     {
         $this->sendable = $value;
+
         return $this;
     }
 

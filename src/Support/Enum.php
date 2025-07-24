@@ -11,7 +11,6 @@ use Illuminate\Support\Collection;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
- * @package Lucent
  */
 abstract class Enum implements CastsAttributes
 {
@@ -24,8 +23,6 @@ abstract class Enum implements CastsAttributes
 
     /**
      * The actual value of the enum instance.
-     *
-     * @var string|int
      */
     private string|int $value;
 
@@ -34,14 +31,15 @@ abstract class Enum implements CastsAttributes
     /**
      * Enum constructor. Validates that the value exists in the enum.
      *
-     * @param string|int $value
+     * @param  string|int  $value
+     *
      * @throws InvalidArgumentException if the value is not valid for the enum.
      */
     public function __construct($value = null)
     {
-        if (!is_null($value)) {
-            if (!in_array($value, static::values(), true)) {
-                throw new \InvalidArgumentException("Invalid enum value: " . $value);
+        if (! is_null($value)) {
+            if (! in_array($value, static::values(), true)) {
+                throw new \InvalidArgumentException('Invalid enum value: '.$value);
             }
 
             $this->value = $value;
@@ -51,8 +49,6 @@ abstract class Enum implements CastsAttributes
 
     /**
      * Returns the raw enum value.
-     *
-     * @return string|int
      */
     public function value(): string|int
     {
@@ -61,8 +57,6 @@ abstract class Enum implements CastsAttributes
 
     /**
      * Returns the human-readable label for the enum value.
-     *
-     * @return string
      */
     public function label(): string
     {
@@ -78,6 +72,7 @@ abstract class Enum implements CastsAttributes
     {
         $class = static::class;
         $reflection = new \ReflectionClass($class);
+
         return $reflection->getConstants();
     }
 
@@ -95,13 +90,11 @@ abstract class Enum implements CastsAttributes
     /**
      * Returns an associative array of constant names to values.
      * Uses reflection and caches the result.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public static function cases(): Collection
     {
         $class = static::class;
-        if (!isset(self::$cache[$class])) {
+        if (! isset(self::$cache[$class])) {
             $reflection = new \ReflectionClass($class);
             $collection = new Collection;
             foreach ($reflection->getConstants() as $key => $value) {
@@ -112,18 +105,15 @@ abstract class Enum implements CastsAttributes
         }
 
         $fromCache = self::$cache[$class] ?? null;
-        if (!is_null($fromCache) && $fromCache instanceof Collection) {
+        if (! is_null($fromCache) && $fromCache instanceof Collection) {
             return $fromCache;
         }
 
-        return new Collection();
+        return new Collection;
     }
 
     /**
      * Creates a new enum instance from a given value.
-     *
-     * @param string|int $value
-     * @return static
      */
     public static function fromValue(string|int $value): static
     {
@@ -132,9 +122,6 @@ abstract class Enum implements CastsAttributes
 
     /**
      * Compares this enum with another for equality.
-     *
-     * @param Enum $enum
-     * @return bool
      */
     public function equals(Enum $enum): bool
     {
@@ -144,8 +131,6 @@ abstract class Enum implements CastsAttributes
     /**
      * Mimics BackedEnum::from — returns enum or throws.
      *
-     * @param string|int $value
-     * @return static
      * @throws InvalidArgumentException
      */
     public static function from(string|int $value): static
@@ -155,9 +140,6 @@ abstract class Enum implements CastsAttributes
 
     /**
      * Mimics BackedEnum::tryFrom — returns enum or null.
-     *
-     * @param string|int $value
-     * @return static|null
      */
     public static function tryFrom(string|int $value): ?static
     {
@@ -170,8 +152,6 @@ abstract class Enum implements CastsAttributes
 
     /**
      * Returns the string representation of the enum value.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -198,6 +178,7 @@ abstract class Enum implements CastsAttributes
         if ($value instanceof Enum) {
             return $value->value;
         }
+
         return $value;
     }
 }

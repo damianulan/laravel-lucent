@@ -2,18 +2,18 @@
 
 namespace Lucent\Services;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Support\Collection;
-use Lucent\Exceptions\Services\ServiceUnauthorized;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use JsonSerializable;
+use Lucent\Exceptions\Services\ServiceUnauthorized;
 
 /*
  * Handle service business logic of data operations and manipulation.
@@ -28,51 +28,39 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 {
     /**
      * Original stack of parameters passed to the service.
-     *
-     * @var \Illuminate\Support\Collection
      */
     private Collection $original;
 
     /**
      * An array set of error messages.
-     *
-     * @var array
      */
     private array $errors = [];
 
     /**
      * cache prefix.
-     *
-     * @var string
      */
     private string $cachePrefix = 'service_';
 
     /**
      * Service cache Time To Live.
-     *
-     * @var int
      */
     private int $defaultCacheTtl = 300; // in seconds
 
     /**
      * Check if service has passed validation and database operations.
-     *
-     * @var bool
      */
     private bool $passed = false;
 
     /**
      * A return value of a handle method.
-     *
-     * @var mixed
      */
     private mixed $returnValue;
 
     public function __construct(array $datas)
     {
-        $this->original = new Collection();
+        $this->original = new Collection;
         foreach ($datas as $key => $value) {
-            if (!isset($this->$key)) {
+            if (! isset($this->$key)) {
                 $this->$key = $value;
                 $this->original->put($key, $value);
             }
@@ -83,20 +71,16 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
      * Pass properties as arguments.
      * Use named arguments eg. ::boot(request: $request, name: $name)
      *
-     * @param mixed ...$props
-     * @return self
+     * @param  mixed  ...$props
      */
     public static function boot(...$props): self
     {
         return new static($props);
     }
 
-
     /**
      * If you need you can set up conditions, that user must meet to use this service.
      * When returning false, service will throw unauthorized exception.
-     *
-     * @return bool
      */
     protected function authorize(): bool
     {
@@ -113,6 +97,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
      * Execute with error handling.
      *
      * @return Lucent\Services\Serivce
+     *
      * @throws Lucent\Exceptions\Services\ServiceUnauthorized
      */
     public function execute(): self
@@ -120,7 +105,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
         $result = false;
         try {
             $auth = $this->authorize();
-            if (!$auth) {
+            if (! $auth) {
                 throw new ServiceUnauthorized(static::class);
             }
             $closure = \Closure::fromCallable([$this, 'handle']);
@@ -140,8 +125,6 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Laravel validation rules.
-     *
-     * @return array
      */
     protected function rules(): array
     {
@@ -150,8 +133,6 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Laravel validation messages.
-     *
-     * @return array
      */
     protected function messages(): array
     {
@@ -160,20 +141,16 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Laravel validation attributes.
-     *
-     * @return array
      */
     protected function attributes(): array
     {
         return [];
     }
 
-
     /**
      * Run validation rules.
      *
-     * @param mixed $datas
-     * @return bool
+     * @param  mixed  $datas
      */
     protected function validate($datas): bool
     {
@@ -184,8 +161,10 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
         $validator = Validator::make($datas, $rules, $messages, $attributes);
         if ($validator->fails()) {
             $this->errors = $validator->errors()->all();
+
             return false;
         }
+
         return true;
     }
 
@@ -195,7 +174,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     protected function logException(Exception $e): void
     {
         $original = $this->original;
-        $datas = array();
+        $datas = [];
 
         if ($this->original->isNotEmpty()) {
             foreach ($original->keys()->all() as $key) {
@@ -205,7 +184,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
             }
         }
 
-        Log::error(static::class . ' failed: ' . $e->getMessage(), [
+        Log::error(static::class.' failed: '.$e->getMessage(), [
             'exception' => $e,
             'datas' => $datas,
         ]);
@@ -217,7 +196,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     protected function remember(string $key, callable $callback, ?int $ttl = null): mixed
     {
         $ttl = $ttl ?? $this->defaultCacheTtl;
-        $cacheKey = $this->cachePrefix . Str::slug(static::class . '_' . $key);
+        $cacheKey = $this->cachePrefix.Str::slug(static::class.'_'.$key);
 
         return Cache::remember($cacheKey, $ttl, $callback);
     }
@@ -235,13 +214,11 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
      */
     public function hasErrors(): bool
     {
-        return !empty($this->errors);
+        return ! empty($this->errors);
     }
 
     /**
      * Check if service has passed.
-     *
-     * @return bool
      */
     public function passed(): bool
     {
@@ -250,12 +227,10 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Check if service has failed.
-     *
-     * @return bool
      */
     public function failed(): bool
     {
-        return !$this->passed || empty($this->errors);
+        return ! $this->passed || empty($this->errors);
     }
 
     /**
@@ -272,18 +247,17 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     public function add(...$props): static
     {
         foreach ($props as $key => $prop) {
-            if (!isset($this->$key)) {
+            if (! isset($this->$key)) {
                 $this->original->put($key, $prop);
                 $this->$key = $prop;
             }
         }
+
         return $this;
     }
 
     /**
      * Get service arguments as an array
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -294,14 +268,14 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
                 $stack[$key] = $this->$key;
             }
         }
+
         return $stack;
     }
 
     /**
      * Convert service arguments to json.
      *
-     * @param int $options
-     * @return mixed
+     * @param  int  $options
      */
     public function toJson($options = 0): mixed
     {
@@ -310,8 +284,6 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Datas to serialize as json.
-     *
-     * @return array
      */
     public function jsonSerialize(): array
     {
@@ -328,27 +300,25 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     /**
      * Returns a return value of a handle method.
-     *
-     * @return mixed
      */
     public function getResult(): mixed
     {
         if (isset($this->returnValue)) {
             return $this->returnValue;
         }
+
         return false;
     }
 
     /**
      * Return request object.
-     *
-     * @return \Illuminate\Http\Request
      */
     public function request(): Request
     {
-        if (!isset($this->request)) {
-            $this->request = new Request();
+        if (! isset($this->request)) {
+            $this->request = new Request;
         }
+
         return $this->request;
     }
 }

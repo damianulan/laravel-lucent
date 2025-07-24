@@ -2,29 +2,25 @@
 
 namespace Lucent\Pipelines;
 
-use Illuminate\Pipeline\Pipeline;
-use Lucent\Pipelines\LucentPipeline;
-
 trait HasPipes
 {
     protected static function bootHasPipes()
     {
         static::updating(function ($model) {
-            if (!self::pushPipes($model)) {
+            if (! self::pushPipes($model)) {
                 return false;
             }
         });
 
         static::creating(function ($model) {
-            if (!self::pushPipes($model)) {
+            if (! self::pushPipes($model)) {
                 return false;
             }
         });
     }
 
     /**
-     *
-     * @param mixed $model
+     * @param  mixed  $model
      * @return mixed
      */
     private static function pushPipes($model)
@@ -44,7 +40,7 @@ trait HasPipes
                 }
 
                 $result = LucentPipeline::make($pipes)->put($attr)->send();
-                if (!$result) {
+                if (! $result) {
                     $result = false;
                     break;
                 }
