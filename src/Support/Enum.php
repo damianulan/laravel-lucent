@@ -39,7 +39,7 @@ abstract class Enum implements CastsAttributes
     {
         if (! is_null($value)) {
             if (! in_array($value, static::values(), true)) {
-                throw new \InvalidArgumentException('Invalid enum value: '.$value);
+                throw new \InvalidArgumentException('Invalid enum value: ' . $value);
             }
 
             $this->value = $value;
@@ -165,7 +165,7 @@ abstract class Enum implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return self::tryFrom($value);
+        return empty($value) ? null : self::tryFrom($value);
     }
 
     /**
@@ -175,8 +175,8 @@ abstract class Enum implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): string|int
     {
-        if ($value instanceof Enum) {
-            return $value->value;
+        if ($value instanceof Enum && isset($value->value)) {
+            return $value->value();
         }
 
         return $value;
