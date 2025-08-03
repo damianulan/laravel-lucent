@@ -140,3 +140,41 @@ $user = new User();
 $user->firstname = 'John';
 $user->empty(); // returns true
 ```
+
+## CascadeDeletes
+
+Adds cascading behavior to your Eloquent models when deleting them. It works based on `deleted` event, thus it does not support mass deletes, as they do not trigger `deleted` event.
+
+```php
+use Lucent\Support\Traits\CascadeDeletes;
+
+class User extends Model
+{
+    use CascadeDeletes;
+
+    // optionally declare relations that should be deleted when model is deleted
+    // if not declared all relations [being: belongsToMany, hasMany, morphToMany, morphMany, hasOne] will be deleted
+    protected $cascadeDelete = ['user_profiles'];
+
+    // optionally declare relations that should not be deleted when model is deleted
+    protected $donotCascadeDelete = ['user_profiles'];
+
+    public function user_profile(): HasOne
+    {
+        return $this->hasOne(UserProfile::class); // this instance will be deleted when model is deleted
+    }
+}
+```
+When property `$cascadeDelete` is not declared, all relations suitable for deletion will be also deleted. List of those relations can be modified via config file `lucent.php` at `models.cascade_delete_relation_types`.
+Only modify if you know what you are doing.
+```php
+'models' => [
+    'cascade_delete_relation_types' => [
+        'Illuminate\Database\Eloquent\Relations\MorphMany',
+        'Illuminate\Database\Eloquent\Relations\MorphToMany',
+        'Illuminate\Database\Eloquent\Relations\BelongsToMany',
+        'Illuminate\Database\Eloquent\Relations\HasMany',
+        'Illuminate\Database\Eloquent\Relations\HasOne',
+    ]
+]
+```

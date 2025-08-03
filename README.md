@@ -33,6 +33,7 @@ php artisan vendor:publish --tag=lucent
 - [Dispatcher](docs/TRAITS.md#dispatcher)
 - [UUID](docs/TRAITS.md#uuid)
 - [VirginModel](docs/TRAITS.md#virginmodel)
+- [CascadeDeletes](docs/TRAITS.md#cascadedeletes)
 
 ## Artisan Console Commands
 
