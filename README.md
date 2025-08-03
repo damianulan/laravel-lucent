@@ -41,6 +41,9 @@ php artisan vendor:publish --tag=lucent
 php artisan model:prune-soft-deletes
 ```
 Schedule this command to periodically prune outdated records of models, that use `Illuminate\Database\Eloquent\SoftDeletes` and `Lucent\Support\Traits\SoftDeletesPrunable` traits.
+```php
+$schedule->command('model::prune-soft-deletes')->daily();
+```
 In env file set `PRUNE_SOFT_DELETES_DAYS` to desired number of days after soft deleting, which records will be considered outdated.
 
 
