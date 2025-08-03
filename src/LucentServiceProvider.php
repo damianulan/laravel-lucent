@@ -5,6 +5,7 @@ namespace Lucent;
 use Illuminate\Support\ServiceProvider;
 use Lucent\Console\Commands\Generators\MakePipeCommand;
 use Lucent\Console\Commands\Generators\MakeServiceCommand;
+use Lucent\Console\Commands\Eloquent\PruneSoftDeletes;
 
 /**
  * @author Damian Ułan <damian.ulan@protonmail.com>
@@ -18,7 +19,7 @@ class LucentServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/lucent.php', 'lucent');
+        $this->mergeConfigFrom(__DIR__ . '/../config/lucent.php', 'lucent');
     }
 
     /**
@@ -27,19 +28,19 @@ class LucentServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        $this->loadTranslationsFrom(__DIR__.'/../lang', 'lucent');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
 
         $this->publishes([
-            __DIR__.'/../lang' => $this->app->langPath('vendor/lucent'),
+            __DIR__ . '/../lang' => $this->app->langPath('vendor/lucent'),
         ], 'lucent-langs');
 
         $this->publishes([
-            __DIR__.'/../config/lucent.php' => config_path('lucent.php'),
+            __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
         ], 'lucent-config');
 
         $this->publishes([
-            __DIR__.'/../stubs' => base_path('stubs'),
-            __DIR__.'/../config/lucent.php' => config_path('lucent.php'),
+            __DIR__ . '/../stubs' => base_path('stubs'),
+            __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
         ], 'lucent');
 
         $this->registerBladeDirectives();
@@ -54,6 +55,7 @@ class LucentServiceProvider extends ServiceProvider
             $this->commands([
                 MakeServiceCommand::class,
                 MakePipeCommand::class,
+                PruneSoftDeletes::class,
             ]);
         }
     }
