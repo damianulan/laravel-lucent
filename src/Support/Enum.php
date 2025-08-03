@@ -39,7 +39,7 @@ abstract class Enum implements CastsAttributes
     {
         if (! is_null($value)) {
             if (! in_array($value, static::values(), true)) {
-                throw new \InvalidArgumentException('Invalid enum value: ' . $value);
+                throw new \InvalidArgumentException('Invalid enum value: '.$value);
             }
 
             $this->value = $value;

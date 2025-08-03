@@ -34,6 +34,16 @@ php artisan vendor:publish --tag=lucent
 - [UUID](docs/TRAITS.md#uuid)
 - [VirginModel](docs/TRAITS.md#virginmodel)
 
+## Artisan Console Commands
+
+### Prune Soft Deletes
+```
+php artisan model:prune-soft-deletes
+```
+Schedule this command to periodically prune outdated records of models, that use `Illuminate\Database\Eloquent\SoftDeletes` and `Lucent\Support\Traits\SoftDeletesPrunable` traits.
+In env file set `PRUNE_SOFT_DELETES_DAYS` to desired number of days after soft deleting, which records will be considered outdated.
+
+
 ### Contact & Contributing
 
 Any question You can submit to **damian.ulan@protonmail.com**.

@@ -12,7 +12,7 @@ return [
 */
 
     'models' => [
-        'prune_soft_deletes_days' => env('PRUNE_SOFT_DELETES_DAYS', 30),
+        'prune_soft_deletes_days' => env('PRUNE_SOFT_DELETES_DAYS', 365),
     ]
 
 ];
