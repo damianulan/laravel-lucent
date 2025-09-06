@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Lucent\Support\Str;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -183,7 +182,7 @@ class Alphabet
         $ascii = '';
         try {
             if (class_exists(\Normalizer::class)) {
-                $normalized = Str::transliterate($char);
+                $normalized = \Normalizer::normalize($char, \Normalizer::FORM_D);
                 $ascii = preg_replace('/\p{Mn}/u', '', $normalized);
 
                 $ascii = mb_substr($ascii ?? '', 0, 1);
