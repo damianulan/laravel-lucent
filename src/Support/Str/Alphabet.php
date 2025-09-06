@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Lucent\Support\Str;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 /**
  * A library of letter manipulation functions. Supports operations on UTF-8 letters.
  *
@@ -177,14 +180,19 @@ class Alphabet
         ];
 
         // Use intl Normalizer if available
-        if (class_exists(\Normalizer::class)) {
-            $normalized = \Normalizer::normalize($char, \Normalizer::FORM_D);
-            $ascii = preg_replace('/\p{Mn}/u', '', $normalized);
+        $ascii = '';
+        try {
+            if (class_exists(\Normalizer::class)) {
+                $normalized = Str::transliterate($char);
+                $ascii = preg_replace('/\p{Mn}/u', '', $normalized);
 
-            return mb_substr($ascii ?? '', 0, 1);
+                $ascii = mb_substr($ascii ?? '', 0, 1);
+            }
+        } catch (\Throwable $e) {
+            Log::debug('Lucent\Support\Str\Alphabet::normalizeToASCII() default failed upon: ' . $e->getMessage());
+            $ascii = $map[$char] ?? $char;
         }
 
-        // Fallback transliteration
-        return $map[$char] ?? $char;
+        return $ascii;
     }
 }
