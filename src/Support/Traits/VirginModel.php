@@ -79,28 +79,32 @@ trait VirginModel
     public function scopeActive(Builder $query): void
     {
         if (in_array('active', $this->fillable)) {
-            $query->where('active', 1);
+            $table = $this->getTable();
+            $query->where("$table.active", 1);
         }
     }
 
     public function scopeInactive(Builder $query): void
     {
         if (in_array('active', $this->fillable)) {
-            $query->where('active', 0);
+            $table = $this->getTable();
+            $query->where("$table.active", 0);
         }
     }
 
     public function scopePublished(Builder $query): void
     {
         if (in_array('draft', $this->fillable)) {
-            $query->where('draft', 0);
+            $table = $this->getTable();
+            $query->where("$table.draft", 0);
         }
     }
 
     public function scopeDrafted(Builder $query): void
     {
         if (in_array('draft', $this->fillable)) {
-            $query->where('draft', 1);
+            $table = $this->getTable();
+            $query->where("$table.draft", 1);
         }
     }
 }
