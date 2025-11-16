@@ -112,6 +112,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
             $result = DB::transaction($closure);
         } catch (Exception $e) {
             $this->logException($e);
+            report($e);
             $this->errors[] = $e->getMessage();
         }
 
@@ -184,7 +185,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
             }
         }
 
-        Log::error(static::class.' failed: '.$e->getMessage(), [
+        Log::error(static::class . ' failed: ' . $e->getMessage(), [
             'exception' => $e,
             'datas' => $datas,
         ]);
@@ -196,7 +197,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     protected function remember(string $key, callable $callback, ?int $ttl = null): mixed
     {
         $ttl = $ttl ?? $this->defaultCacheTtl;
-        $cacheKey = $this->cachePrefix.Str::slug(static::class.'_'.$key);
+        $cacheKey = $this->cachePrefix . Str::slug(static::class . '_' . $key);
 
         return Cache::remember($cacheKey, $ttl, $callback);
     }

@@ -39,7 +39,7 @@ abstract class Enum implements CastsAttributes
     {
         if (! is_null($value)) {
             if (! in_array($value, static::values(), true)) {
-                throw new \InvalidArgumentException('Invalid enum value: '.$value);
+                throw new \InvalidArgumentException('Invalid enum value: ' . $value);
             }
 
             $this->value = $value;
@@ -61,6 +61,26 @@ abstract class Enum implements CastsAttributes
     public function label(): string
     {
         return static::labels()[$this->value] ?? (string) $this->value;
+    }
+
+    /**
+     * Check if given string value equals enum value.
+     *
+     * @param string $value
+     */
+    public function is(string $value): bool
+    {
+        return $value === $this->value();
+    }
+
+    /**
+     * Check if given string value does not equal enum value.
+     *
+     * @param string $value
+     */
+    public function isNot(string $value): bool
+    {
+        return $value === $this->value();
     }
 
     /**
