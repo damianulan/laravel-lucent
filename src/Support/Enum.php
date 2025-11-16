@@ -5,6 +5,7 @@ namespace Lucent\Support;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use ReflectionClass;
 
 /**
  * This is custom, more powerful and convenient enum class implementation.
@@ -19,7 +20,7 @@ abstract class Enum implements CastsAttributes
      *
      * @var array<class-string, array<string, string|int>>
      */
-    protected static array $cache = [];
+    protected static array $cache = array();
 
     /**
      * The actual value of the enum instance.
@@ -37,9 +38,9 @@ abstract class Enum implements CastsAttributes
      */
     public function __construct($value = null)
     {
-        if (! is_null($value)) {
-            if (! in_array($value, static::values(), true)) {
-                throw new \InvalidArgumentException('Invalid enum value: '.$value);
+        if ( ! is_null($value)) {
+            if ( ! in_array($value, static::values(), true)) {
+                throw new \InvalidArgumentException('Invalid enum value: ' . $value);
             }
 
             $this->value = $value;
@@ -48,19 +49,11 @@ abstract class Enum implements CastsAttributes
     }
 
     /**
-     * Returns the raw enum value.
+     * Returns the string representation of the enum value.
      */
-    public function value(): string|int
+    public function __toString(): string
     {
-        return $this->value;
-    }
-
-    /**
-     * Returns the human-readable label for the enum value.
-     */
-    public function label(): string
-    {
-        return static::labels()[$this->value] ?? (string) $this->value;
+        return $this->value ?? '';
     }
 
     /**
@@ -71,7 +64,7 @@ abstract class Enum implements CastsAttributes
     public static function values(): array
     {
         $class = static::class;
-        $reflection = new \ReflectionClass($class);
+        $reflection = new ReflectionClass($class);
 
         return $reflection->getConstants();
     }
@@ -84,7 +77,7 @@ abstract class Enum implements CastsAttributes
      */
     public static function labels(): array
     {
-        return [];
+        return array();
     }
 
     /**
@@ -94,9 +87,9 @@ abstract class Enum implements CastsAttributes
     public static function cases(): Collection
     {
         $class = static::class;
-        if (! isset(self::$cache[$class])) {
-            $reflection = new \ReflectionClass($class);
-            $collection = new Collection;
+        if ( ! isset(self::$cache[$class])) {
+            $reflection = new ReflectionClass($class);
+            $collection = new Collection();
             foreach ($reflection->getConstants() as $key => $value) {
                 $collection->put($key, self::tryFrom($value));
             }
@@ -105,11 +98,11 @@ abstract class Enum implements CastsAttributes
         }
 
         $fromCache = self::$cache[$class] ?? null;
-        if (! is_null($fromCache) && $fromCache instanceof Collection) {
+        if ( ! is_null($fromCache) && $fromCache instanceof Collection) {
             return $fromCache;
         }
 
-        return new Collection;
+        return new Collection();
     }
 
     /**
@@ -118,14 +111,6 @@ abstract class Enum implements CastsAttributes
     public static function fromValue(string|int $value): static
     {
         return new static($value);
-    }
-
-    /**
-     * Compares this enum with another for equality.
-     */
-    public function equals(Enum $enum): bool
-    {
-        return static::class === get_class($enum) && $this->value === $enum->value();
     }
 
     /**
@@ -151,11 +136,43 @@ abstract class Enum implements CastsAttributes
     }
 
     /**
-     * Returns the string representation of the enum value.
+     * Returns the raw enum value.
      */
-    public function __toString(): string
+    public function value(): string|int
     {
-        return $this->value ?? '';
+        return $this->value;
+    }
+
+    /**
+     * Returns the human-readable label for the enum value.
+     */
+    public function label(): string
+    {
+        return static::labels()[$this->value] ?? (string) $this->value;
+    }
+
+    /**
+     * Check if given string value equals enum value.
+     */
+    public function is(string $value): bool
+    {
+        return $value === $this->value();
+    }
+
+    /**
+     * Check if given string value does not equal enum value.
+     */
+    public function isNot(string $value): bool
+    {
+        return $value === $this->value();
+    }
+
+    /**
+     * Compares this enum with another for equality.
+     */
+    public function equals(Enum $enum): bool
+    {
+        return static::class === get_class($enum) && $this->value === $enum->value();
     }
 
     /**

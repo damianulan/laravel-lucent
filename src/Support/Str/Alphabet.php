@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Lucent\Support\Str;
 
 use Illuminate\Support\Facades\Log;
+use Normalizer;
+use Throwable;
 
 /**
  * A library of letter manipulation functions. Supports operations on UTF-8 letters.
@@ -74,11 +76,11 @@ class Alphabet
      */
     public static function getAlphabetPosition(string $letter): ?int
     {
-        $letter = substr($letter, 0, 1);
+        $letter = mb_substr($letter, 0, 1);
         $normalized = self::normalizeToASCII($letter);
-        $normalized = strtoupper($normalized);
+        $normalized = mb_strtoupper($normalized);
 
-        if (strlen($normalized) !== 1) {
+        if (1 !== mb_strlen($normalized)) {
             return null; // e.g., ß → ss (length > 1), invalid
         }
 
@@ -95,7 +97,7 @@ class Alphabet
      */
     private static function normalizeToASCII(string $char): string
     {
-        static $map = [
+        static $map = array(
             'Ą' => 'A',
             'Ć' => 'C',
             'Ę' => 'E',
@@ -176,18 +178,18 @@ class Alphabet
             'ý' => 'y',
             'þ' => 'th',
             'ÿ' => 'y',
-        ];
+        );
 
         // Use intl Normalizer if available
         $ascii = '';
         try {
-            if (class_exists(\Normalizer::class)) {
-                $normalized = \Normalizer::normalize($char, \Normalizer::FORM_D);
+            if (class_exists(Normalizer::class)) {
+                $normalized = Normalizer::normalize($char, Normalizer::FORM_D);
                 $ascii = preg_replace('/\p{Mn}/u', '', $normalized);
 
                 $ascii = mb_substr($ascii ?? '', 0, 1);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::debug('Lucent\Support\Str\Alphabet::normalizeToASCII() default failed upon: ' . $e->getMessage());
             $ascii = $map[$char] ?? $char;
         }

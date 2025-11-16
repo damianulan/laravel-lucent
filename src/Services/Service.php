@@ -2,6 +2,7 @@
 
 namespace Lucent\Services;
 
+use Closure;
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
@@ -34,7 +35,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     /**
      * An array set of error messages.
      */
-    private array $errors = [];
+    private array $errors = array();
 
     /**
      * cache prefix.
@@ -58,14 +59,20 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
 
     public function __construct(array $datas)
     {
-        $this->original = new Collection;
+        $this->original = new Collection();
         foreach ($datas as $key => $value) {
-            if (! isset($this->$key)) {
-                $this->$key = $value;
+            if ( ! isset($this->{$key})) {
+                $this->{$key} = $value;
                 $this->original->put($key, $value);
             }
         }
     }
+
+    /**
+     * Run the service main logic.
+     * All database operations are transaction protected by default.
+     */
+    abstract protected function handle(): mixed;
 
     /**
      * Pass properties as arguments.
@@ -79,21 +86,6 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     }
 
     /**
-     * If you need you can set up conditions, that user must meet to use this service.
-     * When returning false, service will throw unauthorized exception.
-     */
-    protected function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Run the service main logic.
-     * All database operations are transaction protected by default.
-     */
-    abstract protected function handle(): mixed;
-
-    /**
      * Execute with error handling.
      *
      * @return Lucent\Services\Serivce
@@ -105,13 +97,14 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
         $result = false;
         try {
             $auth = $this->authorize();
-            if (! $auth) {
+            if ( ! $auth) {
                 throw new ServiceUnauthorized(static::class);
             }
-            $closure = \Closure::fromCallable([$this, 'handle']);
+            $closure = Closure::fromCallable(array($this, 'handle'));
             $result = DB::transaction($closure);
         } catch (Exception $e) {
             $this->logException($e);
+            report($e);
             $this->errors[] = $e->getMessage();
         }
 
@@ -121,84 +114,6 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
         $this->returnValue = $result;
 
         return $this;
-    }
-
-    /**
-     * Laravel validation rules.
-     */
-    protected function rules(): array
-    {
-        return [];
-    }
-
-    /**
-     * Laravel validation messages.
-     */
-    protected function messages(): array
-    {
-        return [];
-    }
-
-    /**
-     * Laravel validation attributes.
-     */
-    protected function attributes(): array
-    {
-        return [];
-    }
-
-    /**
-     * Run validation rules.
-     *
-     * @param  mixed  $datas
-     */
-    protected function validate($datas): bool
-    {
-        $rules = $this->rules();
-        $messages = $this->messages();
-        $attributes = $this->attributes();
-
-        $validator = Validator::make($datas, $rules, $messages, $attributes);
-        if ($validator->fails()) {
-            $this->errors = $validator->errors()->all();
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Log an exception with context.
-     */
-    protected function logException(Exception $e): void
-    {
-        $original = $this->original;
-        $datas = [];
-
-        if ($this->original->isNotEmpty()) {
-            foreach ($original->keys()->all() as $key) {
-                if (isset($this->$key)) {
-                    $datas[$key] = $this->$key;
-                }
-            }
-        }
-
-        Log::error(static::class.' failed: '.$e->getMessage(), [
-            'exception' => $e,
-            'datas' => $datas,
-        ]);
-    }
-
-    /**
-     * Cache helper.
-     */
-    protected function remember(string $key, callable $callback, ?int $ttl = null): mixed
-    {
-        $ttl = $ttl ?? $this->defaultCacheTtl;
-        $cacheKey = $this->cachePrefix.Str::slug(static::class.'_'.$key);
-
-        return Cache::remember($cacheKey, $ttl, $callback);
     }
 
     /**
@@ -234,22 +149,14 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
     }
 
     /**
-     * Add a manual error.
-     */
-    protected function addError(string $message): void
-    {
-        $this->errors[] = $message;
-    }
-
-    /**
      * Add more data manually. Use named arguments.
      */
     public function add(...$props): static
     {
         foreach ($props as $key => $prop) {
-            if (! isset($this->$key)) {
+            if ( ! isset($this->{$key})) {
                 $this->original->put($key, $prop);
-                $this->$key = $prop;
+                $this->{$key} = $prop;
             }
         }
 
@@ -261,11 +168,11 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
      */
     public function toArray(): array
     {
-        $stack = [];
+        $stack = array();
         $keys = $this->original->keys()->all();
         foreach ($keys as $key) {
-            if (isset($this->$key)) {
-                $stack[$key] = $this->$key;
+            if (isset($this->{$key})) {
+                $stack[$key] = $this->{$key};
             }
         }
 
@@ -315,10 +222,105 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
      */
     public function request(): Request
     {
-        if (! isset($this->request)) {
-            $this->request = new Request;
+        if ( ! isset($this->request)) {
+            $this->request = new Request();
         }
 
         return $this->request;
+    }
+
+    /**
+     * If you need you can set up conditions, that user must meet to use this service.
+     * When returning false, service will throw unauthorized exception.
+     */
+    protected function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Laravel validation rules.
+     */
+    protected function rules(): array
+    {
+        return array();
+    }
+
+    /**
+     * Laravel validation messages.
+     */
+    protected function messages(): array
+    {
+        return array();
+    }
+
+    /**
+     * Laravel validation attributes.
+     */
+    protected function attributes(): array
+    {
+        return array();
+    }
+
+    /**
+     * Run validation rules.
+     *
+     * @param  mixed  $datas
+     */
+    protected function validate($datas): bool
+    {
+        $rules = $this->rules();
+        $messages = $this->messages();
+        $attributes = $this->attributes();
+
+        $validator = Validator::make($datas, $rules, $messages, $attributes);
+        if ($validator->fails()) {
+            $this->errors = $validator->errors()->all();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Log an exception with context.
+     */
+    protected function logException(Exception $e): void
+    {
+        $original = $this->original;
+        $datas = array();
+
+        if ($this->original->isNotEmpty()) {
+            foreach ($original->keys()->all() as $key) {
+                if (isset($this->{$key})) {
+                    $datas[$key] = $this->{$key};
+                }
+            }
+        }
+
+        Log::error(static::class . ' failed: ' . $e->getMessage(), array(
+            'exception' => $e,
+            'datas' => $datas,
+        ));
+    }
+
+    /**
+     * Cache helper.
+     */
+    protected function remember(string $key, callable $callback, ?int $ttl = null): mixed
+    {
+        $ttl ??= $this->defaultCacheTtl;
+        $cacheKey = $this->cachePrefix . Str::slug(static::class . '_' . $key);
+
+        return Cache::remember($cacheKey, $ttl, $callback);
+    }
+
+    /**
+     * Add a manual error.
+     */
+    protected function addError(string $message): void
+    {
+        $this->errors[] = $message;
     }
 }

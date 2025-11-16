@@ -2,8 +2,8 @@
 
 namespace Lucent\Console;
 
-use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Process;
 
 /**
  * Get git info from current repository and run popular git commands at hand.
@@ -18,7 +18,7 @@ class Git
      *
      * @var mixed
      */
-    protected $execs = [];
+    protected $execs = array();
 
     /**
      * command name / method type
@@ -33,29 +33,12 @@ class Git
         $this->command = $command;
     }
 
-    public function get()
-    {
-        return $this->execs;
-    }
-
-    public function run(): ?string
-    {
-        $result = null;
-        foreach ($this->execs as $exec) {
-            $e = Process::run($exec);
-            $result = $e->output();
-            Log::debug("Lucent Git command {$exec} output: '$result'.");
-        }
-
-        return $result;
-    }
-
     public static function head(): string
     {
         $file = file_get_contents(base_path() . '/.git/HEAD');
         $ref = 'ref: refs/heads/';
 
-        return trim(substr($file, strpos($file, $ref) + strlen($ref)));
+        return trim(mb_substr($file, mb_strpos($file, $ref) + mb_strlen($ref)));
     }
 
     public static function getLatestTagName(): string
@@ -65,17 +48,16 @@ class Git
 
     /**
      * Get all tags in your main repository. They are already sorted by the newest.
-     *
-     * @return array
      */
     public static function getTags(): array
     {
         $tags = array();
-        $raw = self::register('git fetch --tags', "git tag --sort=creatordate")->run();
-        if (!empty($raw)) {
+        $raw = self::register('git fetch --tags', 'git tag --sort=creatordate')->run();
+        if ( ! empty($raw)) {
             $tags = array_filter(explode("\n", $raw), function ($item) {
-                $blacklist = ['origin', 'composer'];
-                return !empty($item) && !in_array($item, $blacklist);
+                $blacklist = array('origin', 'composer');
+
+                return ! empty($item) && ! in_array($item, $blacklist);
             });
 
             $tags = array_reverse($tags);
@@ -87,12 +69,11 @@ class Git
     /**
      * Checkout your main repository to a given tag.
      *
-     * @param string $tag
      * @return string - output
      */
     public static function checkoutRelease(string $tag): string
     {
-        return self::register("git fetch --tags", "git checkout $tag")->run();
+        return self::register('git fetch --tags', "git checkout {$tag}")->run();
     }
 
     /**
@@ -103,6 +84,23 @@ class Git
     public static function checkoutLatestRelease(): string
     {
         return self::register('git fetch --tags', 'git checkout $(git tag | sort -V | tail -n 1)')->run();
+    }
+
+    public function get()
+    {
+        return $this->execs;
+    }
+
+    public function run(): ?string
+    {
+        $result = null;
+        foreach ($this->execs as $exec) {
+            $e = Process::run($exec);
+            $result = $e->output();
+            Log::debug("Lucent Git command {$exec} output: '{$result}'.");
+        }
+
+        return $result;
     }
 
     private static function register(...$exec): self

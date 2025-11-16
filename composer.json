@@ -45,10 +45,7 @@
     }
   },
   "scripts": {
-    "test": "vendor/bin/phpunit",
-    "post-update-cmd": [
-      "./vendor/bin/pint"
-    ]
+    "test": "vendor/bin/phpunit"
   },
   "extra": {
     "laravel": {

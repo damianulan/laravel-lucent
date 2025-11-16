@@ -12,7 +12,7 @@ use Illuminate\Pipeline\Pipeline;
  */
 class LucentPipeline
 {
-    private array $pipeStack = [];
+    private array $pipeStack = array();
 
     private $sendable;
 

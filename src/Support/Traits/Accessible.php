@@ -22,7 +22,7 @@ trait Accessible
             $scope = $this->accessScope;
             if (class_exists($scope)) {
                 if (is_subclass_of($scope, Scope::class)) {
-                    $instance = new $scope;
+                    $instance = new $scope();
                     $instance->apply($builder, $this);
                 }
             }

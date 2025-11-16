@@ -3,7 +3,6 @@
 namespace Lucent\Support\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Scope;
 
 /**
  * Determine soft deleted records that are older than a certain number of days, destined for pruning.
