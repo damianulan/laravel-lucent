@@ -3,9 +3,9 @@
 namespace Lucent;
 
 use Illuminate\Support\ServiceProvider;
+use Lucent\Console\Commands\Eloquent\PruneSoftDeletes;
 use Lucent\Console\Commands\Generators\MakePipeCommand;
 use Lucent\Console\Commands\Generators\MakeServiceCommand;
-use Lucent\Console\Commands\Eloquent\PruneSoftDeletes;
 
 /**
  * @author Damian Ułan <damian.ulan@protonmail.com>
@@ -30,18 +30,18 @@ class LucentServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
 
-        $this->publishes([
+        $this->publishes(array(
             __DIR__ . '/../lang' => $this->app->langPath('vendor/lucent'),
-        ], 'lucent-langs');
+        ), 'lucent-langs');
 
-        $this->publishes([
+        $this->publishes(array(
             __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
-        ], 'lucent-config');
+        ), 'lucent-config');
 
-        $this->publishes([
+        $this->publishes(array(
             __DIR__ . '/../stubs' => base_path('stubs'),
             __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
-        ], 'lucent');
+        ), 'lucent');
 
         $this->registerBladeDirectives();
         $this->registerCommands();
@@ -52,11 +52,11 @@ class LucentServiceProvider extends ServiceProvider
     public function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([
+            $this->commands(array(
                 MakeServiceCommand::class,
                 MakePipeCommand::class,
                 PruneSoftDeletes::class,
-            ]);
+            ));
         }
     }
 }

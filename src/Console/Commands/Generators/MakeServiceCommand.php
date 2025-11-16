@@ -50,7 +50,7 @@ class MakeServiceCommand extends GeneratorCommand
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
             ? $customPath
-            : __DIR__.$stub;
+            : __DIR__ . $stub;
     }
 
     /**
@@ -61,7 +61,7 @@ class MakeServiceCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Services';
+        return $rootNamespace . '\Services';
     }
 
     /**
@@ -71,8 +71,8 @@ class MakeServiceCommand extends GeneratorCommand
      */
     protected function getOptions()
     {
-        return [
-            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the form definition already exists'],
-        ];
+        return array(
+            array('force', 'f', InputOption::VALUE_NONE, 'Create the class even if the form definition already exists'),
+        );
     }
 }

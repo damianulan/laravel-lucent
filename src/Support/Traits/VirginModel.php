@@ -14,26 +14,6 @@ use Illuminate\Database\Eloquent\Collection;
 trait VirginModel
 {
     /**
-     * Checks if the model is empty (i.e., has no ID or is not persisted).
-     */
-    public function empty(): bool
-    {
-        $key = $this->getKeyName();
-
-        return empty($this->$key) || ! $this->exists();
-    }
-
-    /**
-     * Checks if the model is not empty (i.e., has an ID and is not persisted).
-     */
-    public function notEmpty(): bool
-    {
-        $key = $this->getKeyName();
-
-        return ! empty($this->$key) && $this->exists();
-    }
-
-    /**
      * Get all model records without any global scopes.
      */
     public static function getAll(): Collection
@@ -74,13 +54,33 @@ trait VirginModel
     }
 
     /**
+     * Checks if the model is empty (i.e., has no ID or is not persisted).
+     */
+    public function empty(): bool
+    {
+        $key = $this->getKeyName();
+
+        return empty($this->{$key}) || ! $this->exists();
+    }
+
+    /**
+     * Checks if the model is not empty (i.e., has an ID and is not persisted).
+     */
+    public function notEmpty(): bool
+    {
+        $key = $this->getKeyName();
+
+        return ! empty($this->{$key}) && $this->exists();
+    }
+
+    /**
      * QUERY LOCAL SCOPES
      */
     public function scopeActive(Builder $query): void
     {
         if (in_array('active', $this->fillable)) {
             $table = $this->getTable();
-            $query->where("$table.active", 1);
+            $query->where("{$table}.active", 1);
         }
     }
 
@@ -88,7 +88,7 @@ trait VirginModel
     {
         if (in_array('active', $this->fillable)) {
             $table = $this->getTable();
-            $query->where("$table.active", 0);
+            $query->where("{$table}.active", 0);
         }
     }
 
@@ -96,7 +96,7 @@ trait VirginModel
     {
         if (in_array('draft', $this->fillable)) {
             $table = $this->getTable();
-            $query->where("$table.draft", 0);
+            $query->where("{$table}.draft", 0);
         }
     }
 
@@ -104,7 +104,7 @@ trait VirginModel
     {
         if (in_array('draft', $this->fillable)) {
             $table = $this->getTable();
-            $query->where("$table.draft", 1);
+            $query->where("{$table}.draft", 1);
         }
     }
 }

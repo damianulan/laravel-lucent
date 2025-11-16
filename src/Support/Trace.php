@@ -8,11 +8,11 @@ namespace Lucent\Support;
  */
 class Trace
 {
-    protected $backtraces = [];
+    protected $backtraces = array();
 
     public static function boot(): self
     {
-        $instance = new self;
+        $instance = new self();
         $instance->backtraces = debug_backtrace();
 
         return $instance;
