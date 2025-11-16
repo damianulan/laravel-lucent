@@ -35,14 +35,14 @@ trait CascadeDeletes
                         $blackList = $model->donotCascadeDelete;
                     }
 
-                    $relations = array_map(fn($needle) => $needle->getName(), array_filter($methods, function ($method) use ($whiteList, $blackList) {
+                    $relations = array_map(fn ($needle) => $needle->getName(), array_filter($methods, function ($method) use ($whiteList, $blackList) {
                         $returnType = $method->getReturnType() ?? null;
 
                         return in_array($returnType, $whiteList) && ! in_array($returnType, $blackList);
                     }));
                 }
 
-                if (! empty($relations)) {
+                if ( ! empty($relations)) {
                     $model->load($relations);
                     foreach ($relations as $method) {
                         $relation = $model->{$method} ?? null;
