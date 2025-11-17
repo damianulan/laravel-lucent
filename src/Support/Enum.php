@@ -25,9 +25,7 @@ abstract class Enum implements CastsAttributes
     /**
      * The actual value of the enum instance.
      */
-    private string|int $value;
-
-    private string $label;
+    public string|int $value;
 
     /**
      * Enum constructor. Validates that the value exists in the enum.
@@ -38,13 +36,12 @@ abstract class Enum implements CastsAttributes
      */
     public function __construct($value = null)
     {
-        if ( ! is_null($value)) {
-            if ( ! in_array($value, static::values(), true)) {
+        if (! is_null($value)) {
+            if (! in_array($value, static::values(), true)) {
                 throw new \InvalidArgumentException('Invalid enum value: ' . $value);
             }
 
             $this->value = $value;
-            $this->label = $this->label();
         }
     }
 
@@ -87,7 +84,7 @@ abstract class Enum implements CastsAttributes
     public static function cases(): Collection
     {
         $class = static::class;
-        if ( ! isset(self::$cache[$class])) {
+        if (! isset(self::$cache[$class])) {
             $reflection = new ReflectionClass($class);
             $collection = new Collection();
             foreach ($reflection->getConstants() as $key => $value) {
@@ -98,7 +95,7 @@ abstract class Enum implements CastsAttributes
         }
 
         $fromCache = self::$cache[$class] ?? null;
-        if ( ! is_null($fromCache) && $fromCache instanceof Collection) {
+        if (! is_null($fromCache) && $fromCache instanceof Collection) {
             return $fromCache;
         }
 
