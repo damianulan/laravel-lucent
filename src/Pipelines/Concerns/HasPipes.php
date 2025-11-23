@@ -1,6 +1,6 @@
 <?php
 
-namespace Lucent\Pipelines;
+namespace Lucent\Pipelines\Concerns;
 
 trait HasPipes
 {
