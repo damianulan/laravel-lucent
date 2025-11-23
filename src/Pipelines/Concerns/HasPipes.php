@@ -1,6 +1,6 @@
 <?php
 
-namespace Lucent\Pipelines;
+namespace Lucent\Pipelines\Concerns;
 
 trait HasPipes
 {
@@ -17,13 +17,13 @@ trait HasPipes
     protected static function bootHasPipes(): void
     {
         static::updating(function ($model) {
-            if ( ! self::pushPipes($model)) {
+            if (! self::pushPipes($model)) {
                 return false;
             }
         });
 
         static::creating(function ($model) {
-            if ( ! self::pushPipes($model)) {
+            if (! self::pushPipes($model)) {
                 return false;
             }
         });
@@ -50,7 +50,7 @@ trait HasPipes
                 }
 
                 $result = LucentPipeline::make($pipes)->put($attr)->send();
-                if ( ! $result) {
+                if (! $result) {
                     $result = false;
                     break;
                 }
