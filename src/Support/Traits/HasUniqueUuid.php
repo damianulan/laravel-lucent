@@ -12,7 +12,6 @@ use Illuminate\Support\Str;
  */
 trait HasUniqueUuid
 {
-
     // Helps the application specify the field type in the database
     public function getUuidKeyType()
     {
@@ -21,8 +20,6 @@ trait HasUniqueUuid
 
     /**
      * Override key name if you named uuid column differently.
-     *
-     * @return string
      */
     public function getUuidKeyName(): string
     {

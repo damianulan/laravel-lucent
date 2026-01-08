@@ -21,13 +21,10 @@ if ( ! function_exists('clean_html')) {
     /**
      * Uses mews/purifier custom setup to clean HTML input off of possible XSS vulnerabilities
      * Best suited for cleaning before placing in rich text editors
-     *
-     * @param string|null $input
-     * @return string
      */
     function clean_html(?string $input): string
     {
-        if($input){
+        if ($input) {
             return Purifier::clean($input, 'lucent_config');
         }
 
