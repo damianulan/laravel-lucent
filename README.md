@@ -36,6 +36,39 @@ php artisan vendor:publish --tag=lucent
 - [VirginModel](docs/TRAITS.md#virginmodel)
 - [CascadeDeletes](docs/TRAITS.md#cascadedeletes)
 
+## Helpers
+### clean_html
+```php
+use Lucent\Helpers\clean_html;
+
+clean_html('<script>alert("XSS");</script>'); // returns empty string
+```
+
+Uses [mews/purifier](https://github.com/mewebstudio/Purifier) package to clean HTML input off of possible XSS vulnerabilities.
+Best suited for cleaning before placing in rich text editors.
+
+### class_uses_trait
+This helper function checks if trait is used by a target class.
+It recurses through the whole class inheritance tree.
+```php
+use Lucent\Helpers\class_uses_trait;
+
+class User extends Model
+{
+    use Accessible;
+}
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        if (class_uses_trait(User::class, Accessible::class)) {
+            // do something
+        }
+    }
+}
+```
+
 ## Artisan Console Commands
 
 ### Prune Soft Deletes

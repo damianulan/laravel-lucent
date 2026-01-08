@@ -60,9 +60,9 @@ class LucentServiceProvider extends ServiceProvider
 
     public function overridePurifierConfig(): void
     {
-        $settings = array_merge(config('purifier.settings'), [
+        $settings = array_merge(config('purifier.settings'), array(
             'lucent_config' => config('lucent.mews_purifier_setting'),
-        ]);
+        ));
 
         config(array(
             'purifier.settings' => $settings,
