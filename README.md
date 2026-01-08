@@ -51,7 +51,6 @@ Best suited for cleaning before placing in rich text editors.
 This helper function checks if trait is used by a target class.
 It recurses through the whole class inheritance tree.
 ```php
-use Lucent\Helpers\class_uses_trait;
 
 class User extends Model
 {
