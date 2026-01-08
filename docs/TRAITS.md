@@ -128,6 +128,11 @@ Schema::create('users', function (Blueprint $table) {
 });
 ```
 
+Find model instance by uuid key:
+```php
+User::findByUuid($uuid);
+```
+
 ## VirginModel
 
 Adds operational helpers to Eloquent model, that is based on common boolean attribute flags such as 'draft' and 'active'.

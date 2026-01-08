@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 trait HasUniqueUuid
 {
     // Helps the application specify the field type in the database
-    public function getUuidKeyType()
+    public static function getUuidKeyType()
     {
         return 'string';
     }
@@ -21,7 +21,7 @@ trait HasUniqueUuid
     /**
      * Override key name if you named uuid column differently.
      */
-    public function getUuidKeyName(): string
+    public static function getUuidKeyName(): string
     {
         return 'uuid';
     }
@@ -47,5 +47,16 @@ trait HasUniqueUuid
                 $model->setAttribute($model->getUuidKeyName(), Str::uuid()->toString());
             }
         });
+    }
+
+    /**
+     * Find model instance by uuid key.
+     *
+     * @param string $uuid
+     * @return static|null
+     */
+    public static function findByUuid(string $uuid): ?static
+    {
+        return static::where(self::getUuidKeyName(), $uuid)->first();
     }
 }
