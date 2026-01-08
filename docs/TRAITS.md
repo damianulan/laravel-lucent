@@ -107,6 +107,27 @@ Schema::create('user_profiles', function (Blueprint $table) {
 });
 ```
 
+## HasUniqueUuid
+
+Adds UUIDv4 as a unique key support to your Eloquent models. It does not replace your primary key, but adds a new unique key.
+
+```php
+use Lucent\Support\Traits\HasUniqueUuid;
+
+class User extends Model
+{
+    use HasUniqueUuid;
+}
+```
+
+Migration:
+```php
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->uuid('uuid');
+});
+```
+
 ## VirginModel
 
 Adds operational helpers to Eloquent model, that is based on common boolean attribute flags such as 'draft' and 'active'.

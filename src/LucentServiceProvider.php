@@ -43,11 +43,9 @@ class LucentServiceProvider extends ServiceProvider
             __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
         ), 'lucent');
 
-        $this->registerBladeDirectives();
         $this->registerCommands();
+        $this->overridePurifierConfig();
     }
-
-    public function registerBladeDirectives(): void {}
 
     public function registerCommands(): void
     {
@@ -58,5 +56,16 @@ class LucentServiceProvider extends ServiceProvider
                 PruneSoftDeletes::class,
             ));
         }
+    }
+
+    public function overridePurifierConfig(): void
+    {
+        $settings = array_merge(config('purifier.settings'), [
+            'lucent_config' => config('lucent.mews_purifier_setting'),
+        ]);
+
+        config(array(
+            'purifier.settings' => $settings,
+        ));
     }
 }

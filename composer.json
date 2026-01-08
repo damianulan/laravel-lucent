@@ -1,12 +1,14 @@
 {
   "name": "damianulan/laravel-lucent",
   "type": "library",
-  "description": "Lucent Laravel skeleton application package",
+  "description": "Lucent is a laravel extension package. It contains useful traits, helpers, macros, contracts and extensions such as Pipelines and Services.",
   "keywords": [
     "laravel",
-    "lucent",
-    "skeleton",
-    "blueprint"
+    "extension",
+    "blueprint",
+    "services",
+    "traits",
+    "pipelines"
   ],
   "license": "MIT",
   "authors": [

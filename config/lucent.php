@@ -29,4 +29,25 @@ return array(
         ),
     ),
 
+    // Additional setting for mews/purifier package
+    // corresponds with clean_html() helper function
+    'mews_purifier_setting' => [
+        'HTML.Allowed' => 'h1,h2,h3,h4,h5,h6,b,strong,i,em,u,a[href|title|target],ul,ol,li,p[style|class],br,span[style|class],img[width|height|alt|src],blockquote,pre,code,table,thead,tbody,tr,th,td',
+        'CSS.AllowedProperties' => 'font-weight,font-style,text-decoration,padding-left,color,background-color,text-align',
+        'HTML.Nofollow' => true,
+        'HTML.TargetBlank' => true,
+        'URI.AllowedSchemes' => [
+            'http' => true,
+            'https' => true,
+            'mailto' => true,
+        ],
+        'Attr.AllowedClasses' => [
+            'ql-align-center',
+            'ql-align-right',
+            'ql-align-justify',
+            'text-center', // Bootstrap
+            'text-right',
+        ],
+    ]
+
 );
