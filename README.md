@@ -32,6 +32,7 @@ php artisan vendor:publish --tag=lucent
 - [Accessible](docs/TRAITS.md#accessible)
 - [Dispatcher](docs/TRAITS.md#dispatcher)
 - [UUID](docs/TRAITS.md#uuid)
+- [HasUniqueUuid](docs/TRAITS.md#hasuniqueuuid)
 - [VirginModel](docs/TRAITS.md#virginmodel)
 - [CascadeDeletes](docs/TRAITS.md#cascadedeletes)
 
