@@ -2,7 +2,9 @@
 
 namespace Lucent\Support\Dtos\Exceptions;
 
-class DtoReadOnlyException extends \Exception
+use Exception;
+
+class DtoReadOnlyException extends Exception
 {
     public function __construct($property)
     {

@@ -2,7 +2,9 @@
 
 namespace Lucent\Support\Dtos\Exceptions;
 
-class DtoInvalidAttribute extends \Exception
+use Exception;
+
+class DtoInvalidAttribute extends Exception
 {
     public function __construct($property)
     {

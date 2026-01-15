@@ -2,30 +2,56 @@
 
 namespace Lucent\Support\Dtos;
 
+use ArrayIterator;
+use Countable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use IteratorAggregate;
 use Lucent\Support\Dtos\Contracts\DtoOptions;
+use Traversable;
 
-abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countable
+abstract class Dto implements Countable, IteratorAggregate, Arrayable, Jsonable
 {
     use DtoOptions;
 
-    protected $attributes = [];
+    protected $attributes = array();
 
-    protected $fillable = [];
+    protected $fillable = array();
 
-    private $original = [];
+    private $original = array();
 
-    private $dirty = [];
+    private $dirty = array();
 
     private $initialized = false;
 
-    public function __construct(array $attributes = [])
+    public function __construct(array $attributes = array())
     {
         $this->fill($attributes);
     }
 
-    public function fill(array $attributes = []): static
+    public function __set(string $key, $value): void
+    {
+        $this->setAttribute($key, $value);
+    }
+
+    public function __get(string $key)
+    {
+        return $this->getAttribute($key);
+    }
+
+    public function __isset(string $key)
+    {
+        return $this->hasAttribute($key);
+    }
+
+    public function __unset(string $key): void
+    {
+        if ($this->hasAttribute($key)) {
+            unset($this->attributes[$key]);
+        }
+    }
+
+    public function fill(array $attributes = array()): static
     {
         foreach ($attributes as $property => $value) {
             $this->setAttribute($property, $value);
@@ -36,27 +62,13 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
         return $this;
     }
 
-    protected function initialize(): void
-    {
-        if(!$this->initialized){
-            $this->initializeDtoOptions();
-            $this->syncOriginal();
-            $this->initialized = true;
-        }
-    }
-
-    protected function isInitialized(): bool
-    {
-        return $this->initialized;
-    }
-
     public function setAttribute($key, $value): void
     {
         $property = DtoProperty::make($key, $value);
         $this->validateSetAttribute($property);
 
-        if($this->hasAttribute($key)){
-            if($this->reassureBeingDirty($property)){
+        if ($this->hasAttribute($key)) {
+            if ($this->reassureBeingDirty($property)) {
                 $this->dirty[$key] = $property->value;
             }
         } else {
@@ -69,7 +81,7 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
     {
         $this->validateGetAttribute($key);
 
-        if($this->hasAttribute($key)){
+        if ($this->hasAttribute($key)) {
             return $this->attributes[$key];
         }
 
@@ -86,24 +98,21 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
         return $this->attributes;
     }
 
-    protected function reassureBeingDirty(DtoProperty $property): bool
-    {
-        return $this->getOriginal($property->name) !== $property->value;
-    }
-
     public function getOriginal(?string $key = null)
     {
-        if($key !== null){
+        if (null !== $key) {
             return $this->original[$key] ?? null;
         }
+
         return $this->original;
     }
 
     public function getDirty(?string $key = null)
     {
-        if($key !== null){
+        if (null !== $key) {
             return $this->dirty[$key] ?? null;
         }
+
         return $this->dirty;
     }
 
@@ -129,9 +138,9 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
         return json_encode($this->attributes, $options);
     }
 
-    public function getIterator(): \Traversable
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->attributes);
+        return new ArrayIterator($this->attributes);
     }
 
     public function count(): int
@@ -141,8 +150,6 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
 
     /**
      * Gets all attributes.
-     *
-     * @return array
      */
     public function all(): array
     {
@@ -151,8 +158,6 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
 
     /**
      * Gets all attributes.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -166,43 +171,40 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
 
     public function isFilled(): bool
     {
-        return !empty($this->attributes);
+        return ! empty($this->attributes);
     }
 
-    public function __set(string $key, $value): void
+    protected function initialize(): void
     {
-        $this->setAttribute($key, $value);
-    }
-
-    public function __get(string $key)
-    {
-        return $this->getAttribute($key);
-    }
-
-    public function __isset(string $key)
-    {
-        return $this->hasAttribute($key);
-    }
-
-    public function __unset(string $key): void
-    {
-        if ($this->hasAttribute($key)) {
-            unset($this->attributes[$key]);
+        if ( ! $this->initialized) {
+            $this->initializeDtoOptions();
+            $this->syncOriginal();
+            $this->initialized = true;
         }
+    }
+
+    protected function isInitialized(): bool
+    {
+        return $this->initialized;
+    }
+
+    protected function reassureBeingDirty(DtoProperty $property): bool
+    {
+        return $this->getOriginal($property->name) !== $property->value;
     }
 
     // Tweaks and validations
 
     protected function validateSetAttribute(DtoProperty $property): void
     {
-        if($this->option('read_only')){
+        if ($this->option('read_only')) {
             throw new Exceptions\DtoReadOnly($property->name);
         }
-        if (!empty($this->fillable) && !in_array($property->name, $this->fillable)) {
+        if ( ! empty($this->fillable) && ! in_array($property->name, $this->fillable)) {
             throw new Exceptions\DtoPropertyNonFillable($property->name);
         }
-        if($this->option('forbids_overrides')){
-            if($this->hasAttribute($property->name)){
+        if ($this->option('forbids_overrides')) {
+            if ($this->hasAttribute($property->name)) {
                 throw new Exceptions\DtoPropertyOverride($property->name);
             }
         }
@@ -210,8 +212,8 @@ abstract class Dto implements Arrayable, Jsonable, \IteratorAggregate, \Countabl
 
     protected function validateGetAttribute($property): void
     {
-        if(! $this->option('ignores_unknown')){
-            if(! $this->hasAttribute($property)){
+        if ( ! $this->option('ignores_unknown')) {
+            if ( ! $this->hasAttribute($property)) {
                 throw new Exceptions\DtoInvalidAttribute($property);
             }
         }

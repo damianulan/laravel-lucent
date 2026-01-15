@@ -9,8 +9,4 @@ use Lucent\Support\Dtos\Workshop\IgnoresUnknownAttributes;
  * @property string $attr1
  * @property string $attr2
  */
-class TestDto extends Dto implements IgnoresUnknownAttributes
-{
-
-
-}
+class TestDto extends Dto implements IgnoresUnknownAttributes {}

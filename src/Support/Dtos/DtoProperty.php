@@ -3,20 +3,29 @@
 namespace Lucent\Support\Dtos;
 
 use InvalidArgumentException;
+use Stringable;
 
-class DtoProperty implements \Stringable
+class DtoProperty implements Stringable
 {
     public $name;
+
     public $type;
+
     public $raw_value;
+
     public $value;
+
+    public function __toString(): string
+    {
+        return $this->value;
+    }
 
     public static function make($name, $value, $type = null): self
     {
-        if(is_numeric($value)){
+        if (is_numeric($value)) {
             throw new InvalidArgumentException('DtoProperty can not be created with key being a numeric value');
         }
-        if(!is_string($name)){
+        if ( ! is_string($name)) {
             throw new InvalidArgumentException('DtoProperty can not be created with key being a non string value');
         }
 
@@ -34,10 +43,5 @@ class DtoProperty implements \Stringable
         $this->value = $value;
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
     }
 }

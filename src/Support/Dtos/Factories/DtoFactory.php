@@ -2,7 +2,4 @@
 
 namespace Lucent\Support\Dtos\Factories;
 
-class DtoFactory
-{
-
-}
+class DtoFactory {}

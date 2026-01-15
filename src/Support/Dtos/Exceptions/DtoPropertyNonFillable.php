@@ -2,7 +2,9 @@
 
 namespace Lucent\Support\Dtos\Exceptions;
 
-class DtoPropertyNonFillable extends \Exception
+use Exception;
+
+class DtoPropertyNonFillable extends Exception
 {
     public function __construct($property)
     {

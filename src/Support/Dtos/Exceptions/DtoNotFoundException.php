@@ -2,7 +2,9 @@
 
 namespace Lucent\Support\Dtos\Exceptions;
 
-class DtoNotFoundException extends \Exception
+use Exception;
+
+class DtoNotFoundException extends Exception
 {
     public function __construct($class)
     {
