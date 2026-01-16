@@ -1,14 +1,15 @@
 {
   "name": "damianulan/laravel-lucent",
   "type": "library",
-  "description": "Lucent is a laravel extension package. It contains useful traits, helpers, macros, contracts and extensions such as Pipelines and Services.",
+  "description": "Lucent is a laravel extension package. It contains useful traits, helpers, macros, contracts and extensions such as ClassDiscovery, Dto Objects and Services.",
   "keywords": [
     "laravel",
     "extension",
     "blueprint",
     "services",
     "traits",
-    "pipelines"
+    "dto",
+    "composer"
   ],
   "license": "MIT",
   "authors": [
