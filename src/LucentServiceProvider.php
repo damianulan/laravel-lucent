@@ -4,7 +4,6 @@ namespace Lucent;
 
 use Illuminate\Support\ServiceProvider;
 use Lucent\Console\Commands\Eloquent\PruneSoftDeletes;
-use Lucent\Console\Commands\Generators\MakePipeCommand;
 use Lucent\Console\Commands\Generators\MakeServiceCommand;
 
 /**
@@ -52,7 +51,6 @@ class LucentServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands(array(
                 MakeServiceCommand::class,
-                MakePipeCommand::class,
                 PruneSoftDeletes::class,
             ));
         }
