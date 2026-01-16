@@ -6,7 +6,7 @@
         },
         "array_indentation": true,
         "array_syntax": {
-            "syntax": "long"
+            "syntax": "short"
         },
         "blank_line_after_namespace": true,
         "blank_line_after_opening_tag": true,
