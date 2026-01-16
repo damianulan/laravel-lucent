@@ -37,8 +37,6 @@ php artisan vendor:publish --tag=lucent
 ## Helpers
 ### clean_html
 ```php
-use Lucent\Helpers\clean_html;
-
 clean_html('<script>alert("XSS");</script>'); // returns empty string
 ```
 
