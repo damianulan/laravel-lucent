@@ -26,6 +26,6 @@ class MagellanScope
             throw new \Exception('Composer autoload_classmap.php is not of expected type [array]');
         }
 
-        return MagellanCollection::make(array_keys($composerContents));
+        return MagellanCollection::make(array_keys($composerContents))->validate();
     }
 }
