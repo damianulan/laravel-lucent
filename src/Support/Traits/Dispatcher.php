@@ -10,6 +10,9 @@ use ReflectionClass;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2025 damianulan
+ *
+ * @deprecated 1.2. will be removed
+ * It collides with laravel's model events in unexpected ways in certain configurations.
  */
 trait Dispatcher
 {
