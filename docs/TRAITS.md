@@ -46,7 +46,7 @@ public function apply(Builder $builder, Model $model): void
 
 ```
 
-## Dispatcher
+## Dispatcher (DEPRECATED)
 
 Adds support for method-based model event listeners, so that global boot() methods won't get overriden. In your model create event static methods like created{ModelName}, updated{ModelName}() etc.
 
