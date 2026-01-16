@@ -25,12 +25,10 @@ php artisan vendor:publish --tag=lucent
 ## Components
 
 - [Services](docs/SERVICES.md)
-- [Pipelines](docs/PIPELINES.md)
 
 ## Traits
 
 - [Accessible](docs/TRAITS.md#accessible)
-- [Dispatcher](docs/TRAITS.md#dispatcher)
 - [UUID](docs/TRAITS.md#uuid)
 - [HasUniqueUuid](docs/TRAITS.md#hasuniqueuuid)
 - [VirginModel](docs/TRAITS.md#virginmodel)
