@@ -64,6 +64,16 @@ class UserController extends Controller
 }
 ```
 
+## Support 
+
+### Lucent\Support\Str\Alphabet
+A library of letter manipulation functions.
+- getAlphabetPosition - returns a position of a letter (including UTF-8 letters like Ą, É, Ç, etc.) in the ext-Latin alphabet.
+- normalizeToASCII - normalizes a UTF-8 letter (e.g., Ą, É, Ç) to its base ASCII character.
+
+### Lucent\Support\Str\Currencies\CurrencyLib
+A library of currency conversion functions. It follows ISO 4217 standard.
+
 ## Artisan Console Commands
 
 ### Prune Soft Deletes

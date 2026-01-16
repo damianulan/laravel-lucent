@@ -1,10 +1,8 @@
 <?php
 
-namespace Lucent\Exceptions\Services;
+namespace Lucent\Services\Exceptions;
 
-use Exception;
-
-class ServiceUnauthorized extends Exception
+class ServiceUnauthorized extends \Exception
 {
     public function __construct(string $service)
     {
