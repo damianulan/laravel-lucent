@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use JsonSerializable;
-use Lucent\Exceptions\Services\ServiceUnauthorized;
 
 /*
  * Handle service business logic of data operations and manipulation.
@@ -25,7 +23,7 @@ use Lucent\Exceptions\Services\ServiceUnauthorized;
  * @package Lucent
  */
 
-abstract class Service implements Arrayable, Jsonable, JsonSerializable
+abstract class Service implements Arrayable, Jsonable, \JsonSerializable
 {
     /**
      * Original stack of parameters passed to the service.
@@ -98,7 +96,7 @@ abstract class Service implements Arrayable, Jsonable, JsonSerializable
         try {
             $auth = $this->authorize();
             if ( ! $auth) {
-                throw new ServiceUnauthorized(static::class);
+                throw new Exceptions\ServiceUnauthorized(static::class);
             }
             $closure = Closure::fromCallable(array($this, 'handle'));
             $result = DB::transaction($closure);
