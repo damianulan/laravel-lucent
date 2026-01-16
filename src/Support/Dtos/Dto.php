@@ -14,17 +14,17 @@ abstract class Dto implements Countable, IteratorAggregate, Arrayable, Jsonable
 {
     use DtoOptions;
 
-    protected $attributes = array();
+    protected $attributes = [];
 
-    protected $fillable = array();
+    protected $fillable = [];
 
-    private $original = array();
+    private $original = [];
 
-    private $dirty = array();
+    private $dirty = [];
 
     private $initialized = false;
 
-    public function __construct(array $attributes = array())
+    public function __construct(array $attributes = [])
     {
         $this->fill($attributes);
     }
@@ -51,7 +51,7 @@ abstract class Dto implements Countable, IteratorAggregate, Arrayable, Jsonable
         }
     }
 
-    public function fill(array $attributes = array()): static
+    public function fill(array $attributes = []): static
     {
         foreach ($attributes as $property => $value) {
             $this->setAttribute($property, $value);

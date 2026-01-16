@@ -18,7 +18,7 @@ class Git
      *
      * @var mixed
      */
-    protected $execs = array();
+    protected $execs = [];
 
     /**
      * command name / method type
@@ -51,7 +51,7 @@ class Git
      */
     public static function getTags(): array
     {
-        $tags = array();
+        $tags = [];
         $raw = self::register('git fetch --tags', 'git tag --sort=creatordate')->run();
         if ( ! empty($raw)) {
             $tags = array_filter(explode("\n", $raw), function ($item) {

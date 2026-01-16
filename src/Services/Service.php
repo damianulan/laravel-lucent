@@ -33,7 +33,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
     /**
      * An array set of error messages.
      */
-    private array $errors = array();
+    private array $errors = [];
 
     /**
      * cache prefix.
@@ -166,7 +166,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
      */
     public function toArray(): array
     {
-        $stack = array();
+        $stack = [];
         $keys = $this->original->keys()->all();
         foreach ($keys as $key) {
             if (isset($this->{$key})) {
@@ -287,7 +287,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
     protected function logException(Exception $e): void
     {
         $original = $this->original;
-        $datas = array();
+        $datas = [];
 
         if ($this->original->isNotEmpty()) {
             foreach ($original->keys()->all() as $key) {
