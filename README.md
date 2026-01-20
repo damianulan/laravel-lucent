@@ -25,6 +25,7 @@ php artisan vendor:publish --tag=lucent
 ## Components
 
 - [Services](docs/SERVICES.md)
+- [Magellan Scopes](docs/MAGELLAN.md)
 
 ## Traits
 

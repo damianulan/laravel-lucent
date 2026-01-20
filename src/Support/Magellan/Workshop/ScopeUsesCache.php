@@ -5,7 +5,7 @@ namespace Lucent\Support\Magellan\Workshop;
 interface ScopeUsesCache
 {
     /**
-     * Number of seconds
+     * Number of seconds to cache the result of this scope.
      *
      * @return int
      */

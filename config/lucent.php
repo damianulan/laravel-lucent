@@ -50,4 +50,12 @@ return array(
         ),
     ),
 
+    'magellan' => array(
+        // by default magellan scopes exclude all vendor classes
+        // declare relative vendor file/dir paths that should be scanned by magellan scopes
+        'vendor_include' => array(
+            'spatie/',
+        ),
+    ),
+
 );
