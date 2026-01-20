@@ -6,29 +6,29 @@ use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputOption;
 
-#[AsCommand(name: 'make:service')]
-class MakeServiceCommand extends GeneratorCommand
+#[AsCommand(name: 'make:magellan')]
+class MakeMagellanCommand extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'make:service';
+    protected $name = 'make:magellan';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new Service class';
+    protected $description = 'Create a new Magellan scope class';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Service';
+    protected $type = 'Scope';
 
     /**
      * Get the stub file for the generator.
@@ -37,7 +37,7 @@ class MakeServiceCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return $this->resolveStubPath('/stubs/service.stub');
+        return $this->resolveStubPath('/stubs/magellan.stub');
     }
 
     /**
@@ -61,7 +61,7 @@ class MakeServiceCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Services';
+        return $rootNamespace . '\Support\Magellan';
     }
 
     /**
@@ -72,7 +72,7 @@ class MakeServiceCommand extends GeneratorCommand
     protected function getOptions()
     {
         return array(
-            array('force', 'f', InputOption::VALUE_NONE, 'Create the class even if the service class already exists'),
+            array('force', 'f', InputOption::VALUE_NONE, 'Create the class even if the scope already exists'),
         );
     }
 }

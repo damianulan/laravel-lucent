@@ -1,0 +1,32 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lucent\Support\Magellan\MagellanScope;
+use Lucent\Support\Magellan\Workshop\ScopeUsesCache;
+
+class {{ class }} extends MagellanScope implements ScopeUsesCache
+{
+    /**
+     * Filter classes by its reflection. Return false to not to include.
+     *
+     * @param \ReflectionClass $class
+     * @return bool
+     */
+    protected function scope(\ReflectionClass $class): bool
+    {
+        // include your logic here
+        return true;
+    }
+
+    /**
+     * Number of seconds to cache the result of this scope.
+     *
+     * @return int
+     */
+    public function ttl(): int
+    {
+        return 3600;
+    }
+
+}

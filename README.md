@@ -25,6 +25,7 @@ php artisan vendor:publish --tag=lucent
 ## Components
 
 - [Services](docs/SERVICES.md)
+- [Magellan Scopes](docs/MAGELLAN.md)
 
 ## Traits
 
@@ -37,8 +38,6 @@ php artisan vendor:publish --tag=lucent
 ## Helpers
 ### clean_html
 ```php
-use Lucent\Helpers\clean_html;
-
 clean_html('<script>alert("XSS");</script>'); // returns empty string
 ```
 
@@ -65,6 +64,16 @@ class UserController extends Controller
     }
 }
 ```
+
+## Support 
+
+### Lucent\Support\Str\Alphabet
+A library of letter manipulation functions.
+- getAlphabetPosition - returns a position of a letter (including UTF-8 letters like Ą, É, Ç, etc.) in the ext-Latin alphabet.
+- normalizeToASCII - normalizes a UTF-8 letter (e.g., Ą, É, Ç) to its base ASCII character.
+
+### Lucent\Support\Str\Currencies\CurrencyLib
+A library of currency conversion functions. It follows ISO 4217 standard.
 
 ## Artisan Console Commands
 
