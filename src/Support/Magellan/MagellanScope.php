@@ -189,7 +189,12 @@ class MagellanScope implements Arrayable, Jsonable, \Countable, \IteratorAggrega
             $this->collection[] = $class;
         }
         if($this instanceof ScopeUsesCache && !Cache::has(static::getCacheKey())){
-            Cache::put(static::getCacheKey(), $this->collection, $this->ttl());
+            $ttl = $this->ttl();
+            if($ttl > 0){
+                Cache::put(static::getCacheKey(), $this->collection, $this->ttl());
+            } else {
+                Cache::forever(static::getCacheKey(), $this->collection);
+            }
         }
         return $this;
     }
