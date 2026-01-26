@@ -24,7 +24,7 @@
     "ext-json": "*",
     "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
     "mews/purifier": "^3.4",
-    "damianulan/php-dtos": "^1.0"
+    "damianulan/php-dtos": "*"
   },
   "require-dev": {
     "mockery/mockery": "^1.5",
