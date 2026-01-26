@@ -5,8 +5,6 @@ namespace Lucent\Support\Dtos\Factories;
 use DTOs\Dto;
 use DTOs\Factories\DtoFactory;
 use Illuminate\Database\Eloquent\Model;
-use Lucent\Support\Dtos\LaravelDto;
-use InvalidArgumentException;
 
 class ModelDtoFactory extends DtoFactory
 {
@@ -15,9 +13,9 @@ class ModelDtoFactory extends DtoFactory
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @param string|null                         $dtoClass
-     * @return \Lucent\Support\Dtos\LaravelDto
+     * @return \DTOs\Dto
      */
-    public static function makeFromModel(Model $model, ?string $dtoClass = null): LaravelDto
+    public static function makeFromModel(Model $model, ?string $dtoClass = null): Dto
     {
         if(class_uses_trait(HasDtoFactory::class, $model) && is_null($dtoClass)){
             $dtoClass = $model->getDtoClass();
@@ -32,14 +30,5 @@ class ModelDtoFactory extends DtoFactory
         }
 
         return static::make($attributes, $dtoClass);
-    }
-
-    protected static function validateDtoClass(string $dtoClass): void
-    {
-        parent::validateDtoClass($dtoClass);
-        $reflection = new \ReflectionClass($dtoClass);
-        if ( ! $reflection->isSubclassOf(LaravelDto::class)) {
-            throw new InvalidArgumentException("Dto class $dtoClass must extend Lucent\Support\Dtos\LaravelDto");
-        }
     }
 }
