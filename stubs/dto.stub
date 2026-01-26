@@ -1,0 +1,13 @@
+<?php
+
+namespace {{ namespace }};
+
+use Lucent\Support\Dtos\LaravelDto as Dto;
+
+class {{ class }} extends Dto
+{
+    protected $attributes = [];
+
+    protected $fillable = [];
+
+}
