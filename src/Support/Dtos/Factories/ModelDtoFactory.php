@@ -29,6 +29,10 @@ class ModelDtoFactory extends DtoFactory
             }
         }
 
+        foreach($model->relationsToArray() as $key => $value){
+            $attributes[$key] = $value;
+        }
+
         return static::make($attributes, $dtoClass);
     }
 }
