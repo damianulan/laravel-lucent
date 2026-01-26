@@ -4,6 +4,7 @@ namespace Lucent;
 
 use Illuminate\Support\ServiceProvider;
 use Lucent\Console\Commands\Eloquent\PruneSoftDeletes;
+use Lucent\Console\Commands\Generators\MakeDtoCommand;
 use Lucent\Console\Commands\Generators\MakeMagellanCommand;
 use Lucent\Console\Commands\Generators\MakeServiceCommand;
 
@@ -53,6 +54,7 @@ class LucentServiceProvider extends ServiceProvider
             $this->commands(array(
                 MakeServiceCommand::class,
                 MakeMagellanCommand::class,
+                MakeDtoCommand::class,
                 PruneSoftDeletes::class,
             ));
         }
