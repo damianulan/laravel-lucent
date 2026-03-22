@@ -71,8 +71,8 @@ class MakeMagellanCommand extends GeneratorCommand
      */
     protected function getOptions()
     {
-        return array(
-            array('force', 'f', InputOption::VALUE_NONE, 'Create the class even if the scope already exists'),
-        );
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the scope already exists'],
+        ];
     }
 }

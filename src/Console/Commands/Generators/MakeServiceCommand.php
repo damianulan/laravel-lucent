@@ -71,8 +71,8 @@ class MakeServiceCommand extends GeneratorCommand
      */
     protected function getOptions()
     {
-        return array(
-            array('force', 'f', InputOption::VALUE_NONE, 'Create the class even if the service class already exists'),
-        );
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the service class already exists'],
+        ];
     }
 }

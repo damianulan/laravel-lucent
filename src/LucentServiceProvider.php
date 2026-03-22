@@ -30,18 +30,18 @@ class LucentServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'lucent');
 
-        $this->publishes(array(
+        $this->publishes([
             __DIR__ . '/../lang' => $this->app->langPath('vendor/lucent'),
-        ), 'lucent-langs');
+        ], 'lucent-langs');
 
-        $this->publishes(array(
+        $this->publishes([
             __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
-        ), 'lucent-config');
+        ], 'lucent-config');
 
-        $this->publishes(array(
+        $this->publishes([
             __DIR__ . '/../stubs' => base_path('stubs'),
             __DIR__ . '/../config/lucent.php' => config_path('lucent.php'),
-        ), 'lucent');
+        ], 'lucent');
 
         $this->registerCommands();
         $this->overridePurifierConfig();
@@ -50,22 +50,22 @@ class LucentServiceProvider extends ServiceProvider
     public function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands(array(
+            $this->commands([
                 MakeServiceCommand::class,
                 MakeMagellanCommand::class,
                 PruneSoftDeletes::class,
-            ));
+            ]);
         }
     }
 
     public function overridePurifierConfig(): void
     {
-        $settings = array_merge(config('purifier.settings'), array(
+        $settings = array_merge(config('purifier.settings'), [
             'lucent_config' => config('lucent.mews_purifier_setting'),
-        ));
+        ]);
 
-        config(array(
+        config([
             'purifier.settings' => $settings,
-        ));
+        ]);
     }
 }

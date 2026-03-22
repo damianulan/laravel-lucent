@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use JsonSerializable;
 
 /*
  * Handle service business logic of data operations and manipulation.
@@ -23,7 +24,7 @@ use Illuminate\Support\Str;
  * @package Lucent
  */
 
-abstract class Service implements Arrayable, Jsonable, \JsonSerializable
+abstract class Service implements JsonSerializable, Arrayable, Jsonable
 {
     /**
      * Original stack of parameters passed to the service.
@@ -98,7 +99,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
             if ( ! $auth) {
                 throw new Exceptions\ServiceUnauthorized(static::class);
             }
-            $closure = Closure::fromCallable(array($this, 'handle'));
+            $closure = Closure::fromCallable([$this, 'handle']);
             $result = DB::transaction($closure);
         } catch (Exception $e) {
             $this->logException($e);
@@ -241,7 +242,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
      */
     protected function rules(): array
     {
-        return array();
+        return [];
     }
 
     /**
@@ -249,7 +250,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
      */
     protected function messages(): array
     {
-        return array();
+        return [];
     }
 
     /**
@@ -257,7 +258,7 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
      */
     protected function attributes(): array
     {
-        return array();
+        return [];
     }
 
     /**
@@ -297,10 +298,10 @@ abstract class Service implements Arrayable, Jsonable, \JsonSerializable
             }
         }
 
-        Log::error(static::class . ' failed: ' . $e->getMessage(), array(
+        Log::error(static::class . ' failed: ' . $e->getMessage(), [
             'exception' => $e,
             'datas' => $datas,
-        ));
+        ]);
     }
 
     /**

@@ -55,7 +55,7 @@ class Git
         $raw = self::register('git fetch --tags', 'git tag --sort=creatordate')->run();
         if ( ! empty($raw)) {
             $tags = array_filter(explode("\n", $raw), function ($item) {
-                $blacklist = array('origin', 'composer');
+                $blacklist = ['origin', 'composer'];
 
                 return ! empty($item) && ! in_array($item, $blacklist);
             });

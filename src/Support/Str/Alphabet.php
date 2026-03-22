@@ -97,7 +97,7 @@ class Alphabet
      */
     private static function normalizeToASCII(string $char): string
     {
-        static $map = array(
+        static $map = [
             'Ą' => 'A',
             'Ć' => 'C',
             'Ę' => 'E',
@@ -178,7 +178,7 @@ class Alphabet
             'ý' => 'y',
             'þ' => 'th',
             'ÿ' => 'y',
-        );
+        ];
 
         // Use intl Normalizer if available
         $ascii = '';

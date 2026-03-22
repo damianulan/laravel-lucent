@@ -2,7 +2,9 @@
 
 namespace Lucent\Services\Exceptions;
 
-class ServiceUnauthorized extends \Exception
+use Exception;
+
+class ServiceUnauthorized extends Exception
 {
     public function __construct(string $service)
     {

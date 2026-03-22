@@ -22,14 +22,14 @@ trait CascadeDeletes
     {
         static::deleted(function (Model $model): void {
             try {
-                $relations = isset($model->cascadeDelete) && is_array($model->cascadeDelete) ? $model->cascadeDelete : array();
+                $relations = isset($model->cascadeDelete) && is_array($model->cascadeDelete) ? $model->cascadeDelete : [];
 
                 $auto_delete = (bool) config('lucent.models.auto_cascade_deletes', true);
                 if (empty($relations) && $auto_delete) {
                     $reflection = new ReflectionClass($model);
                     $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
-                    $whiteList = config('lucent.models.cascade_delete_relation_types', array());
+                    $whiteList = config('lucent.models.cascade_delete_relation_types', []);
                     $blackList = [];
                     if (isset($model->donotCascadeDelete) && is_array($model->donotCascadeDelete)) {
                         $blackList = $model->donotCascadeDelete;
