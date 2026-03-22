@@ -14,7 +14,7 @@ use Illuminate\Pipeline\Pipeline;
  */
 class LucentPipeline
 {
-    private array $pipeStack = array();
+    private array $pipeStack = [];
 
     private $sendable;
 

@@ -44,7 +44,7 @@ trait HasPipes
     {
         $result = false;
         if (isset($model->pipes) && is_array($model->pipes) && count($model->pipes)) {
-            $pipelines = array();
+            $pipelines = [];
             $result = true;
 
             foreach ($model->pipes as $attr => $pipe) {

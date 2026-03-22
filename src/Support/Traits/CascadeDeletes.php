@@ -30,7 +30,7 @@ trait CascadeDeletes
                     $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 
                     $whiteList = config('lucent.models.cascade_delete_relation_types', array());
-                    $blackList = array();
+                    $blackList = [];
                     if (isset($model->donotCascadeDelete) && is_array($model->donotCascadeDelete)) {
                         $blackList = $model->donotCascadeDelete;
                     }

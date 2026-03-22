@@ -8,7 +8,7 @@ namespace Lucent\Support;
  */
 class Trace
 {
-    protected $backtraces = array();
+    protected $backtraces = [];
 
     public static function boot(): self
     {
