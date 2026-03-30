@@ -387,12 +387,6 @@ class Archive extends Model
 
 This scope is used by the pruning command described below.
 
-#### `Dispatcher` (deprecated)
-
-Adds method-based model event dispatching such as `createdUser()`, `updatedCampaign()`, and similar hooks on the model itself.
-
-The trait is marked deprecated and should only be used in legacy code.
-
 ### Helpers
 
 #### `clean_html()`
