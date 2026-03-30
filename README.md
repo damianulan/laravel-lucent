@@ -485,7 +485,7 @@ Methods:
 
 #### `Lucent\Console\Git`
 
-Small wrapper around common git queries and release-oriented commands:
+Structured helper around common git queries and release-oriented commands:
 
 ```php
 use Lucent\Console\Git;
@@ -495,16 +495,27 @@ $tags = Git::getTags();
 $latest = Git::getLatestTagName();
 ```
 
+For richer inspection, build a repository-scoped instance:
+
+```php
+$git = Git::repository(base_path())
+    ->queue(['git', 'status', '--short'])
+    ->queue(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
+    ->run();
+
+$result = $git->lastResult();
+```
+
 It also exposes:
 
 - `checkoutRelease(string $tag)`
 - `checkoutLatestRelease()`
 
-These methods execute shell git commands through Laravel's process facade.
+Each executed command is captured as a `GitResult` object with the command, working directory, exit code, output, error output, and inferred caller metadata.
 
 #### `Lucent\Support\Trace`
 
-Captures the current backtrace:
+Captures and inspects the current backtrace:
 
 ```php
 use Lucent\Support\Trace;
@@ -512,7 +523,26 @@ use Lucent\Support\Trace;
 $trace = Trace::boot();
 ```
 
-This class is minimal and primarily useful as an internal debugging helper.
+Useful helpers:
+
+```php
+$caller = $trace->caller();
+$steps = $trace->steps(oldestFirst: true, withSignature: true);
+$appFrames = $trace->onlyApplicationFrames()->withoutVendorFrames();
+$details = $trace->details();
+```
+
+You can also build a trace from an exception:
+
+```php
+try {
+    // ...
+} catch (Throwable $exception) {
+    $trace = Trace::fromThrowable($exception);
+}
+```
+
+Reflection is used internally to enrich frames with method signatures, namespaces, and callable metadata, making the tool suitable for debugging chained service calls, controller pipelines, and vendor-to-app handoffs.
 
 ### Artisan Commands
 

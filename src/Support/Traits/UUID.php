@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
  * Adds UUIDv4 as primary key support to your Eloquent models.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  */
 trait UUID
 {

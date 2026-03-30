@@ -2,118 +2,262 @@
 
 namespace Lucent\Console;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Process;
+use JsonSerializable;
+use Lucent\Support\Trace;
+use RuntimeException;
+use Throwable;
+use Symfony\Component\Process\Process;
 
 /**
- * Get git info from current repository and run popular git commands at hand.
+ * Inspect and execute git commands in a structured way.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  */
-class Git
+class Git implements Arrayable, Jsonable, JsonSerializable
 {
     /**
-     * executable command
-     *
-     * @var mixed
+     * @var Collection<int, array<int, string>>
      */
-    protected $execs = [];
+    protected Collection $commands;
 
     /**
-     * command name / method type
-     *
-     * @var mixed
+     * @var Collection<int, GitResult>
      */
-    protected $command;
+    protected Collection $results;
 
-    public function __construct($exec, $command = null)
-    {
-        $this->execs = $exec;
-        $this->command = $command;
+    public function __construct(
+        protected ?string $repositoryPath = null,
+        protected ?string $invoker = null,
+    ) {
+        $this->repositoryPath = $repositoryPath ?: base_path();
+        $this->invoker = $invoker ?: static::resolveInvoker();
+        $this->commands = new Collection();
+        $this->results = new Collection();
     }
 
-    public static function head(): string
+    public static function repository(?string $path = null): self
     {
-        $file = file_get_contents(base_path() . '/.git/HEAD');
-        $ref = 'ref: refs/heads/';
-
-        return trim(mb_substr($file, mb_strpos($file, $ref) + mb_strlen($ref)));
+        return new self($path);
     }
 
-    public static function getLatestTagName(): string
+    public static function head(?string $path = null): string
     {
-        return self::register('git fetch --tags', 'git describe --tags --abbrev=0')->run();
+        return static::repository($path)->branch();
+    }
+
+    public static function getLatestTagName(?string $path = null): string
+    {
+        return static::repository($path)
+            ->fetchTags()
+            ->latestTag();
     }
 
     /**
      * Get all tags in your main repository. They are already sorted by the newest.
      */
-    public static function getTags(): array
+    public static function getTags(?string $path = null, bool $fetch = true): array
     {
-        $tags = [];
-        $raw = self::register('git fetch --tags', 'git tag --sort=creatordate')->run();
-        if ( ! empty($raw)) {
-            $tags = array_filter(explode("\n", $raw), function ($item) {
-                $blacklist = ['origin', 'composer'];
+        $git = static::repository($path);
 
-                return ! empty($item) && ! in_array($item, $blacklist);
-            });
-
-            $tags = array_reverse($tags);
+        if ($fetch) {
+            $git->fetchTags();
         }
 
-        return $tags;
+        return $git->tags();
+    }
+
+    public static function checkoutRelease(string $tag, ?string $path = null): string
+    {
+        return static::repository($path)
+            ->fetchTags()
+            ->checkout($tag)
+            ->lastOutput();
+    }
+
+    public static function checkoutLatestRelease(?string $path = null): string
+    {
+        $git = static::repository($path)->fetchTags();
+
+        return $git->checkout($git->latestTag())->lastOutput();
+    }
+
+    public function branch(): string
+    {
+        $result = $this->runCommand(['git', 'rev-parse', '--abbrev-ref', 'HEAD']);
+
+        return trim($result->output());
     }
 
     /**
-     * Checkout your main repository to a given tag.
-     *
-     * @return string - output
+     * @return array<int, string>
      */
-    public static function checkoutRelease(string $tag): string
+    public function tags(): array
     {
-        return self::register('git fetch --tags', "git checkout {$tag}")->run();
+        $result = $this->runCommand(['git', 'tag', '--sort=-version:refname']);
+        $blacklist = ['origin', 'composer'];
+
+        return array_values(array_filter(
+            preg_split('/\r\n|\r|\n/', trim($result->output())) ?: [],
+            static fn (string $item): bool => $item !== '' && ! in_array($item, $blacklist, true),
+        ));
+    }
+
+    public function latestTag(): string
+    {
+        $tag = $this->tags()[0] ?? null;
+
+        if ($tag === null) {
+            throw new RuntimeException('No git tags found.');
+        }
+
+        return $tag;
+    }
+
+    public function fetchTags(): self
+    {
+        if (! $this->hasRemotes()) {
+            return $this;
+        }
+
+        $this->runCommand(['git', 'fetch', '--tags']);
+
+        return $this;
+    }
+
+    public function checkout(string $reference): self
+    {
+        $this->runCommand(['git', 'checkout', $reference]);
+
+        return $this;
     }
 
     /**
-     * Checkout to latest release
-     *
-     * @return string - output
+     * @param  array<int, string>  $command
      */
-    public static function checkoutLatestRelease(): string
+    public function queue(array $command): self
     {
-        return self::register('git fetch --tags', 'git checkout $(git tag | sort -V | tail -n 1)')->run();
+        $this->commands->push($command);
+
+        return $this;
     }
 
-    public function get()
+    public function run(): self
     {
-        return $this->execs;
+        $queued = $this->commands->values()->all();
+        $this->commands = new Collection();
+
+        foreach ($queued as $command) {
+            $this->runCommand($command);
+        }
+
+        return $this;
     }
 
-    public function run(): ?string
+    public function lastResult(): ?GitResult
     {
-        $result = null;
-        foreach ($this->execs as $exec) {
-            $e = Process::run($exec);
-            $result = $e->output();
-            Log::debug("Lucent Git command {$exec} output: '{$result}'.");
+        return $this->results->last();
+    }
+
+    /**
+     * @return array<int, GitResult>
+     */
+    public function results(): array
+    {
+        return $this->results->all();
+    }
+
+    public function lastOutput(): string
+    {
+        return $this->lastResult()?->output() ?? '';
+    }
+
+    public function successful(): bool
+    {
+        return $this->results->every(static fn (GitResult $result): bool => $result->successful());
+    }
+
+    public function failed(): bool
+    {
+        return ! $this->successful();
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'repository_path' => $this->repositoryPath,
+            'invoker' => $this->invoker,
+            'queued_commands' => $this->commands->values()->all(),
+            'results' => array_map(
+                static fn (GitResult $result): array => $result->toArray(),
+                $this->results(),
+            ),
+        ];
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    public function toJson($options = 0): string|false
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    /**
+     * @param  array<int, string>  $command
+     */
+    protected function runCommand(array $command): GitResult
+    {
+        $process = new Process($command, $this->repositoryPath);
+        $process->run();
+
+        $result = new GitResult(
+            command: $command,
+            workingDirectory: $this->repositoryPath,
+            output: $process->getOutput(),
+            errorOutput: $process->getErrorOutput(),
+            exitCode: $process->getExitCode() ?? 1,
+            invoker: $this->invoker,
+        );
+
+        $this->results->push($result);
+
+        $this->logResult($result);
+
+        if ($result->failed()) {
+            throw new RuntimeException($result->errorOutput() ?: $result->output() ?: 'Git command failed.');
         }
 
         return $result;
     }
 
-    private static function register(...$exec): self
+    protected static function resolveInvoker(): ?string
     {
-        $trace = debug_backtrace();
-        $command = $trace[3]['function'] ?? null;
-        $instance = new self($exec, $command);
+        return Trace::boot()
+            ->outsideNamespace(['Lucent\\Support', __NAMESPACE__])
+            ->first()['function'] ?? null;
+    }
 
-        if (is_array($exec)) {
-            $exec = implode('; ', $exec);
+    protected function hasRemotes(): bool
+    {
+        $result = new Process(['git', 'remote'], $this->repositoryPath);
+        $result->run();
+
+        return trim($result->getOutput()) !== '';
+    }
+
+    protected function logResult(GitResult $result): void
+    {
+        try {
+            Log::debug('Lucent Git command executed.', $result->toArray());
+        } catch (Throwable) {
+            // Config files may call Git before facades are bootstrapped.
         }
-        Log::debug("Lucent Git command {$exec} initialized.");
-
-        return $instance;
     }
 }

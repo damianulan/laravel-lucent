@@ -9,7 +9,7 @@ use Lucent\Console\Commands\Generators\MakeServiceCommand;
 
 /**
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  * @license MIT
  */
 class LucentServiceProvider extends ServiceProvider
