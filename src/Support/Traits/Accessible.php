@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Scope;
  * eg.: protected $accessScope = UserScope::class;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  */
 trait Accessible
 {

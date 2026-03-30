@@ -20,7 +20,7 @@ use JsonSerializable;
  * Best works as Repository-Service design pattern.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  * @package Lucent
  */
 

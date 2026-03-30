@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
  * Adds operational helpers to Eloquent model, that is based on common boolean attribute flags such as 'draft' and 'active'.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  */
 trait VirginModel
 {

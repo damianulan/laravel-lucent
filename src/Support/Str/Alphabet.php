@@ -12,7 +12,7 @@ use Throwable;
  * A library of letter manipulation functions. Supports operations on UTF-8 letters.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  */
 class Alphabet
 {

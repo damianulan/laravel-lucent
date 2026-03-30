@@ -12,9 +12,8 @@ use Throwable;
  * Adds cascade deletes support to your Eloquent models.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  *
- * @link https://github.com/damianulan/laravel-lucent/blob/main/docs/TRAITS.md#cascadedeletes
  */
 trait CascadeDeletes
 {

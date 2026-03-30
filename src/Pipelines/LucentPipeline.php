@@ -8,7 +8,7 @@ use Illuminate\Pipeline\Pipeline;
  * Handles custom laravel pipelines coupled with models.
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  *
  * @deprecated 1.2. will be removed
  */

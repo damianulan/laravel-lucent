@@ -13,7 +13,7 @@ use OutOfBoundsException;
  * @forked from https://github.com/alcohol/iso4217
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
- * @copyright 2025 damianulan
+ * @copyright 2026 damianulan
  */
 class CurrencyLib
 {
