@@ -12,6 +12,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 use Throwable;
 use Traversable;
 
@@ -56,6 +57,40 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
     public static function fromBacktrace(array $backtraces): self
     {
         return new self($backtraces);
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $frame
+     */
+    public static function reflectionForFrame(?array $frame): ?ReflectionFunctionAbstract
+    {
+        if (null === $frame) {
+            return null;
+        }
+
+        $function = $frame['function'] ?? null;
+
+        if ( ! is_string($function) || '{closure}' === $function) {
+            return null;
+        }
+
+        try {
+            if (isset($frame['class']) && is_string($frame['class'])) {
+                $reflection = new ReflectionClass($frame['class']);
+
+                if ($reflection->hasMethod($function)) {
+                    return $reflection->getMethod($function);
+                }
+            }
+
+            if (function_exists($function)) {
+                return new ReflectionFunction($function);
+            }
+        } catch (ReflectionException) {
+            return null;
+        }
+
+        return null;
     }
 
     /**
@@ -118,7 +153,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
      */
     public function last(): ?array
     {
-        if ($this->backtraces === []) {
+        if ([] === $this->backtraces) {
             return null;
         }
 
@@ -138,18 +173,14 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
     {
         $classes = (array) $classes;
 
-        return $this->filter(function (array $frame) use ($classes): bool {
-            return ! in_array($frame['class'] ?? null, $classes, true);
-        });
+        return $this->filter(fn (array $frame): bool => ! in_array($frame['class'] ?? null, $classes, true));
     }
 
     public function onlyClasses(string|array $classes): self
     {
         $classes = (array) $classes;
 
-        return $this->filter(function (array $frame) use ($classes): bool {
-            return in_array($frame['class'] ?? null, $classes, true);
-        });
+        return $this->filter(fn (array $frame): bool => in_array($frame['class'] ?? null, $classes, true));
     }
 
     public function withinNamespace(string|array $namespaces): self
@@ -159,7 +190,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         return $this->filter(function (array $frame) use ($namespaces): bool {
             $class = $frame['class'] ?? null;
 
-            if (! is_string($class)) {
+            if ( ! is_string($class)) {
                 return false;
             }
 
@@ -180,7 +211,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         return $this->filter(function (array $frame) use ($namespaces): bool {
             $class = $frame['class'] ?? null;
 
-            if (! is_string($class)) {
+            if ( ! is_string($class)) {
                 return true;
             }
 
@@ -198,9 +229,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
     {
         $functions = (array) $functions;
 
-        return $this->filter(function (array $frame) use ($functions): bool {
-            return in_array($frame['function'] ?? null, $functions, true);
-        });
+        return $this->filter(fn (array $frame): bool => in_array($frame['function'] ?? null, $functions, true));
     }
 
     public function inPath(string|array $paths): self
@@ -210,7 +239,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         return $this->filter(function (array $frame) use ($paths): bool {
             $file = $frame['file'] ?? null;
 
-            if (! is_string($file)) {
+            if ( ! is_string($file)) {
                 return false;
             }
 
@@ -241,7 +270,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         return $this->filter(function (array $frame) use ($vendorPath): bool {
             $file = $frame['file'] ?? null;
 
-            if (! is_string($file)) {
+            if ( ! is_string($file)) {
                 return true;
             }
 
@@ -264,40 +293,6 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
     public function reflection(int $index = 0): ?ReflectionFunctionAbstract
     {
         return static::reflectionForFrame($this->get($index));
-    }
-
-    /**
-     * @param  array<string, mixed>|null  $frame
-     */
-    public static function reflectionForFrame(?array $frame): ?ReflectionFunctionAbstract
-    {
-        if ($frame === null) {
-            return null;
-        }
-
-        $function = $frame['function'] ?? null;
-
-        if (! is_string($function) || $function === '{closure}') {
-            return null;
-        }
-
-        try {
-            if (isset($frame['class']) && is_string($frame['class'])) {
-                $reflection = new ReflectionClass($frame['class']);
-
-                if ($reflection->hasMethod($function)) {
-                    return $reflection->getMethod($function);
-                }
-            }
-
-            if (function_exists($function)) {
-                return new ReflectionFunction($function);
-            }
-        } catch (ReflectionException) {
-            return null;
-        }
-
-        return null;
     }
 
     /**
@@ -340,9 +335,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
             $frames = array_reverse($frames);
         }
 
-        return array_map(function (array $frame) use ($withSignature): string {
-            return $this->describeFrame($frame, $withSignature);
-        }, $frames);
+        return array_map(fn (array $frame): string => $this->describeFrame($frame, $withSignature), $frames);
     }
 
     /**
@@ -350,7 +343,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
      */
     public function describeFrame(?array $frame, bool $withSignature = false): string
     {
-        if ($frame === null) {
+        if (null === $frame) {
             return 'unknown';
         }
 
@@ -359,13 +352,13 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         $line = $frame['line'] ?? '?';
         $description = sprintf('%s at %s:%s', $callable, $file, $line);
 
-        if (! $withSignature) {
+        if ( ! $withSignature) {
             return $description;
         }
 
         $signature = $this->formatSignature(static::reflectionForFrame($frame));
 
-        if ($signature === null) {
+        if (null === $signature) {
             return $description;
         }
 
@@ -381,7 +374,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         $type = $frame['type'] ?? '::';
         $function = $frame['function'] ?? 'unknown';
 
-        if (! is_string($class) || $class === '') {
+        if ( ! is_string($class) || '' === $class) {
             return $function . '()';
         }
 
@@ -390,7 +383,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
 
     protected function formatSignature(?ReflectionFunctionAbstract $reflection): ?string
     {
-        if ($reflection === null) {
+        if (null === $reflection) {
             return null;
         }
 
@@ -406,7 +399,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
                     $default = sprintf(" = '%s'", $defaultValue);
                 } elseif (is_bool($defaultValue)) {
                     $default = $defaultValue ? ' = true' : ' = false';
-                } elseif ($defaultValue === null) {
+                } elseif (null === $defaultValue) {
                     $default = ' = null';
                 } elseif (is_scalar($defaultValue)) {
                     $default = sprintf(' = %s', $defaultValue);
@@ -434,7 +427,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
     {
         $file = $frame['file'] ?? null;
 
-        if (! is_string($file)) {
+        if ( ! is_string($file)) {
             return false;
         }
 
@@ -448,7 +441,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
         mixed $class,
         ?ReflectionFunctionAbstract $reflection = null,
     ): ?string {
-        if ($reflection instanceof \ReflectionMethod) {
+        if ($reflection instanceof ReflectionMethod) {
             return $reflection->getDeclaringClass()->getNamespaceName();
         }
 
@@ -456,7 +449,7 @@ class Trace implements Arrayable, Countable, IteratorAggregate, Jsonable, JsonSe
             return $reflection->getNamespaceName();
         }
 
-        if (! is_string($class)) {
+        if ( ! is_string($class)) {
             return null;
         }
 

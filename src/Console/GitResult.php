@@ -60,7 +60,7 @@ class GitResult implements Arrayable, Jsonable, JsonSerializable
 
     public function successful(): bool
     {
-        return $this->exitCode === 0;
+        return 0 === $this->exitCode;
     }
 
     public function failed(): bool

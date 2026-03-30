@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Log;
 use JsonSerializable;
 use Lucent\Support\Trace;
 use RuntimeException;
-use Throwable;
 use Symfony\Component\Process\Process;
+use Throwable;
 
 /**
  * Inspect and execute git commands in a structured way.
@@ -103,7 +103,7 @@ class Git implements Arrayable, Jsonable, JsonSerializable
 
         return array_values(array_filter(
             preg_split('/\r\n|\r|\n/', trim($result->output())) ?: [],
-            static fn (string $item): bool => $item !== '' && ! in_array($item, $blacklist, true),
+            static fn (string $item): bool => '' !== $item && ! in_array($item, $blacklist, true),
         ));
     }
 
@@ -111,7 +111,7 @@ class Git implements Arrayable, Jsonable, JsonSerializable
     {
         $tag = $this->tags()[0] ?? null;
 
-        if ($tag === null) {
+        if (null === $tag) {
             throw new RuntimeException('No git tags found.');
         }
 
@@ -120,7 +120,7 @@ class Git implements Arrayable, Jsonable, JsonSerializable
 
     public function fetchTags(): self
     {
-        if (! $this->hasRemotes()) {
+        if ( ! $this->hasRemotes()) {
             return $this;
         }
 
@@ -209,6 +209,13 @@ class Git implements Arrayable, Jsonable, JsonSerializable
         return json_encode($this->toArray(), $options);
     }
 
+    protected static function resolveInvoker(): ?string
+    {
+        return Trace::boot()
+            ->outsideNamespace(['Lucent\\Support', __NAMESPACE__])
+            ->first()['function'] ?? null;
+    }
+
     /**
      * @param  array<int, string>  $command
      */
@@ -237,19 +244,12 @@ class Git implements Arrayable, Jsonable, JsonSerializable
         return $result;
     }
 
-    protected static function resolveInvoker(): ?string
-    {
-        return Trace::boot()
-            ->outsideNamespace(['Lucent\\Support', __NAMESPACE__])
-            ->first()['function'] ?? null;
-    }
-
     protected function hasRemotes(): bool
     {
         $result = new Process(['git', 'remote'], $this->repositoryPath);
         $result->run();
 
-        return trim($result->getOutput()) !== '';
+        return '' !== trim($result->getOutput());
     }
 
     protected function logResult(GitResult $result): void

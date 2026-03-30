@@ -13,7 +13,6 @@ use Throwable;
  *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2026 damianulan
- *
  */
 trait CascadeDeletes
 {

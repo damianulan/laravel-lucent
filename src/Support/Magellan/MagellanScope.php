@@ -23,7 +23,7 @@ use Traversable;
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2026 damianulan
  */
-class MagellanScope implements Countable, IteratorAggregate, Arrayable, Jsonable
+class MagellanScope implements Arrayable, Countable, IteratorAggregate, Jsonable
 {
     /**
      * Class blacklist

@@ -24,7 +24,7 @@ use JsonSerializable;
  * @package Lucent
  */
 
-abstract class Service implements JsonSerializable, Arrayable, Jsonable
+abstract class Service implements Arrayable, Jsonable, JsonSerializable
 {
     /**
      * Original stack of parameters passed to the service.
