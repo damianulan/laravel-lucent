@@ -33,7 +33,7 @@ trait HasUniqueUuid
 
     public function uniqueIds(): array
     {
-        return [static::getUuidKeyName()];
+        return [static::getKeyName(), static::getUuidKeyName()];
     }
 
     /**
@@ -57,6 +57,11 @@ trait HasUniqueUuid
     public function newUniqueUuid(): string
     {
         return Str::uuid()->toString();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return $this->getUuidKeyName();
     }
 
     protected static function bootHasUniqueUuid(): void
