@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
  * Adds UUIDv4 as primary key support to your Eloquent models.
  *
  * @note Risky when tables get big -- then use HasUniqueUuid trait instead
+ *
  * @author Damian Ułan <damian.ulan@protonmail.com>
  * @copyright 2026 damianulan
  */
