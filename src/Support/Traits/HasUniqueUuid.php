@@ -54,7 +54,7 @@ trait HasUniqueUuid
         return $this->getAttribute($this->getUuidKeyName());
     }
 
-    public function newUniqueUuid(): string
+    public static function newUniqueUuid(): string
     {
         return Str::uuid()->toString();
     }
@@ -72,7 +72,7 @@ trait HasUniqueUuid
          */
         static::creating(function ($model): void {
             if (null === $model->getUuidKey()) {
-                $model->setAttribute($model->getUuidKeyName(), $model->newUniqueUuid());
+                $model->setAttribute($model->getUuidKeyName(), static::newUniqueUuid());
             }
         });
     }
