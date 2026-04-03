@@ -26,7 +26,7 @@ trait HasUniqueUuid
         return 'uuid';
     }
 
-    public function initializeHasPublicUuid(): void
+    public function initializeHasUniqueUuid(): void
     {
         $this->usesUniqueIds = true;
     }
