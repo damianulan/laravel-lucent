@@ -26,6 +26,16 @@ trait HasUniqueUuid
         return 'uuid';
     }
 
+    public function initializeHasUniqueUuid(): void
+    {
+        $this->usesUniqueIds = true;
+    }
+
+    public function uniqueIds(): array
+    {
+        return [static::getKeyName(), static::getUuidKeyName()];
+    }
+
     /**
      * Find model instance by uuid key.
      */
@@ -44,6 +54,16 @@ trait HasUniqueUuid
         return $this->getAttribute($this->getUuidKeyName());
     }
 
+    public static function newUniqueUuid(): string
+    {
+        return Str::uuid()->toString();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return $this->getUuidKeyName();
+    }
+
     protected static function bootHasUniqueUuid(): void
     {
         /**
@@ -52,7 +72,7 @@ trait HasUniqueUuid
          */
         static::creating(function ($model): void {
             if (null === $model->getUuidKey()) {
-                $model->setAttribute($model->getUuidKeyName(), Str::uuid()->toString());
+                $model->setAttribute($model->getUuidKeyName(), static::newUniqueUuid());
             }
         });
     }
