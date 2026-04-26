@@ -238,7 +238,7 @@ class Git implements Arrayable, Jsonable, JsonSerializable
         $this->logResult($result);
 
         if ($result->failed()) {
-            throw new RuntimeException($result->errorOutput() ?: $result->output() ?: 'Git command failed.');
+            throw new RuntimeException($result->errorOutput() ?: $result->output() ?: 'Git command "'.$command.'" failed.');
         }
 
         return $result;
